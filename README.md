@@ -51,11 +51,13 @@ Contributions from this repository:
 
 ## Installation:
 
-1. Download **[Latest Version](https://github.com/ElvUI-WotLK/ElvUI/releases/latest)**
+1. Download **[Latest Version](https://github.com/BanditTech/ElvUI-Ascension/releases/latest)**
 2. Unpack the Zip file
-3. Open the folder "ElvUI-(#.##)"
-4. Copy (or drag and drop) **ElvUI** and **ElvUI_OptionsUI** into your Wow-Directory\Interface\AddOns
-5. Restart WoW
+3. Open the folder "ElvUI-Ascension-(#.##)"
+4. Copy (or drag and drop) **ElvUI**, **ElvUI_OptionsUI** and **ElvUI_Enhanced** into your Wow-Directory\Interface\AddOns
+5. Unpack Patchfile.zip
+6. Place the Patch-Y.mpq file into  `Ascension Launcher\resources\client\Data`
+7. Restart WoW
 
 ## Plugins:
 ElvUI Enhanced - Included in this repo
