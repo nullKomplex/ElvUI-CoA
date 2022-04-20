@@ -27,11 +27,11 @@ Contributions from this repository:
 
 ## Screenshots:
 
-<a href="https://user-images.githubusercontent.com/590348/77227057-4d9ec400-6b8e-11ea-8672-29789434b9fe.jpg">
-<img src="https://user-images.githubusercontent.com/590348/77227055-4bd50080-6b8e-11ea-975e-a68784d34327.jpg" align="right" width="48.5%">
+<a href="https://user-images.githubusercontent.com/13251996/164303359-8656318b-367b-4282-b52a-e69fcac2822a.png">
+<img src="https://user-images.githubusercontent.com/13251996/164303359-8656318b-367b-4282-b52a-e69fcac2822a.png" align="right" width="48.5%">
 </a>
-<a href="https://user-images.githubusercontent.com/590348/77227304-65774780-6b90-11ea-9f64-432786d2a597.jpg">
-<img src="https://user-images.githubusercontent.com/590348/77227077-98b8d700-6b8e-11ea-9822-f30103eca56b.jpg" width="48.5%">
+<a href="https://user-images.githubusercontent.com/13251996/164303444-8fc5692d-6801-4d77-854f-e56b8979eae0.png">
+<img src="https://user-images.githubusercontent.com/13251996/164303444-8fc5692d-6801-4d77-854f-e56b8979eae0.png" width="48.5%">
 </a>
 
 <a href="https://user-images.githubusercontent.com/590348/77227091-bc7c1d00-6b8e-11ea-8c4f-29029a0b750a.jpg">
