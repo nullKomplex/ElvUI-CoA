@@ -11,6 +11,20 @@ It completely replaces the default Blizzard UI at every level with a new and bet
 As such, you'll only ever have to update ElvUI and not worry too much about its individual components.
 This UI will arrange your interface to be more flexible and practical.
 
+### This Version is meant for Ascension Classless WOW server
+You will need to install the patch file included in the repository into your `resources\client\Data\` folder
+
+This merges the changes from several sources into one single place.
+
+* Power, Energy and Rage bars were an addition from [ElvUI Classless fork](https://github.com/ThalinsGenohan/ElvUI-Classless). 
+* The new code base and patchfile was from SzylerAddons Discord. They fixed several of the classless modifications and improved upon them greatly, as well as fixing the issues with the ElvUI enhanced addon not working properly. These files are now included in this repo.
+
+Contributions from this repository:
+* Modifications to Rangefinder for more spells (fixes unitframe range fader)
+* Fix for Energy and Rage bars not updating in realtime
+* Expanded Raid Buff reminder, and additional option added for selecting Attack or Caster buffs
+
+
 ## Screenshots:
 
 <a href="https://user-images.githubusercontent.com/590348/77227057-4d9ec400-6b8e-11ea-8672-29789434b9fe.jpg">
