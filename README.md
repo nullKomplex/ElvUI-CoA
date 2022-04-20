@@ -17,7 +17,11 @@ You will need to install the patch file included in the repository into your `re
 This merges the changes from several sources into one single place.
 
 * Power, Energy and Rage bars were an addition from [ElvUI Classless fork](https://github.com/ThalinsGenohan/ElvUI-Classless). 
-* The new code base and patchfile was from SzylerAddons Discord. They fixed several of the classless modifications and improved upon them greatly, as well as fixing the issues with the ElvUI enhanced addon not working properly. These files are now included in this repo.
+* The new code base and patchfile was from SzylerAddons Discord. They fixed several of the classless modifications and improved upon them greatly, as well as fixing the issues with the ElvUI enhanced addon not working properly. These files are now included in this repo. Credit goes to these fine people for their contributions:
+    * Krazh
+    * Luciq
+    * PowerTheGreat
+    * ParryHotter
 
 Contributions from this repository:
 * Modifications to Rangefinder for more spells (fixes unitframe range fader)
