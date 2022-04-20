@@ -58,7 +58,7 @@ Contributions from this repository:
 5. Restart WoW
 
 ## Plugins:
-[ElvUI_Enhanced](https://github.com/ElvUI-WotLK/ElvUI_Enhanced)
+ElvUI Enhanced - Included in this repo
 <br />
 [ElvUI_AddOnSkins](https://github.com/ElvUI-WotLK/ElvUI_AddOnSkins)
 <br />
