@@ -4,6 +4,7 @@ local S = E:GetModule("Skins")
 --Lua functions
 local _G = _G
 local unpack = unpack
+local find = string.find
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
@@ -40,16 +41,40 @@ S:AddCallbackForAddon("Blizzard_TrainerUI", "Skin_Blizzard_TrainerUI", function(
 	ClassTrainerSkillIcon:StripTextures()
 	ClassTrainerSkillIcon:StyleButton(nil, true)
 
-	S:HandleCollapseExpandButton(ClassTrainerCollapseAllButton, "+", nil, nil, 1)
+	ClassTrainerCollapseAllButton:SetNormalTexture(E.Media.Textures.Plus)
+	ClassTrainerCollapseAllButton.SetNormalTexture = E.noop
+	ClassTrainerCollapseAllButton:GetNormalTexture():Point("LEFT", 3, 2)
+	ClassTrainerCollapseAllButton:GetNormalTexture():Size(16)
+
+	ClassTrainerCollapseAllButton:SetHighlightTexture("")
+	ClassTrainerCollapseAllButton.SetHighlightTexture = E.noop
+
+	ClassTrainerCollapseAllButton:SetDisabledTexture(E.Media.Textures.Plus)
+	ClassTrainerCollapseAllButton.SetDisabledTexture = E.noop
+	ClassTrainerCollapseAllButton:GetDisabledTexture():Point("LEFT", 3, 2)
+	ClassTrainerCollapseAllButton:GetDisabledTexture():Size(16)
+	ClassTrainerCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
 
 	for i = 1, CLASS_TRAINER_SKILLS_DISPLAYED do
 		local skillButton = _G["ClassTrainerSkill"..i]
 		local highlight = _G["ClassTrainerSkill"..i.."Highlight"]
 
-		S:HandleCollapseExpandButton(skillButton, "+", nil, nil, 1)
+		skillButton:SetNormalTexture(E.Media.Textures.Plus)
+		skillButton.SetNormalTexture = E.noop
+		skillButton:GetNormalTexture():Size(16)
 
 		highlight:SetTexture("")
 		highlight.SetTexture = E.noop
+
+		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
+			if find(texture, "MinusButton") then
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
+			elseif find(texture, "PlusButton") then
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
+			else
+				self:GetNormalTexture():SetTexture("")
+			end
+		end)
 	end
 
 	S:HandleButton(ClassTrainerCancelButton)
@@ -89,6 +114,14 @@ S:AddCallbackForAddon("Blizzard_TrainerUI", "Skin_Blizzard_TrainerUI", function(
 
 	hooksecurefunc("ClassTrainer_SetToClassTrainer", function()
 		CLASS_TRAINER_SKILLS_DISPLAYED = 10
+	end)
+
+	hooksecurefunc(ClassTrainerCollapseAllButton, "SetNormalTexture", function(self, texture)
+		if find(texture, "MinusButton") then
+			self:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
+		else
+			self:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
+		end
 	end)
 
 	hooksecurefunc("ClassTrainer_SetSelection", function()

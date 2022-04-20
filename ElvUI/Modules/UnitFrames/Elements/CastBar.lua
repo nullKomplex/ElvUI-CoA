@@ -7,7 +7,6 @@ local abs, min = math.abs, math.min
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local UnitIsPlayer = UnitIsPlayer
-local UnitClass = UnitClass
 local UnitReaction = UnitReaction
 local UnitCanAttack = UnitCanAttack
 
@@ -38,7 +37,6 @@ function UF:Construct_Castbar(frame, moverName)
 	castbar.PostCastStart = self.PostCastStart
 	castbar.PostCastStop = self.PostCastStop
 	castbar.PostCastInterruptible = self.PostCastInterruptible
-	castbar.PostCastFail = UF.PostCastFail
 	castbar:SetClampedToScreen(true)
 	castbar:CreateBackdrop(nil, nil, nil, self.thinBorders, true)
 
@@ -163,7 +161,7 @@ function UF:Configure_Castbar(frame)
 
 		if db.castbar.spark then
 			castbar.Spark = castbar.Spark_
-			castbar.Spark:SetPoint("CENTER", castbar:GetStatusBarTexture(), "RIGHT", 0, 0)
+			castbar.Spark:Point("CENTER", castbar:GetStatusBarTexture(), "RIGHT", 0, 0)
 			castbar.Spark:Height(db.castbar.height * 2)
 		elseif castbar.Spark then
 			castbar.Spark:Hide()
@@ -386,17 +384,12 @@ function UF:PostCastStart(unit)
 	if (self.notInterruptible and unit ~= "player") and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local _, Class = UnitClass(unit)
-		local t = Class and ElvUF.colors.class[Class]
+		local t = E.media.herocolor
 		if t then r, g, b = t[1], t[2], t[3] end
 	elseif UF.db.colors.castReactionColor then
 		local Reaction = UnitReaction(unit, "player")
 		local t = Reaction and ElvUF.colors.reaction[Reaction]
 		if t then r, g, b = t[1], t[2], t[3] end
-	end
-
-	if self.SafeZone then
-		self.SafeZone:Show()
 	end
 
 	self:SetStatusBarColor(r, g, b)
@@ -409,17 +402,6 @@ function UF:PostCastStop(unit)
 	end
 end
 
-function UF:PostCastFail()
-	local db = self:GetParent().db
-	local customColor = db and db.castbar and db.castbar.customColor
-	local color = (customColor and customColor.enable and customColor.colorInterrupted) or UF.db.colors.castInterruptedColor
-	self:SetStatusBarColor(color.r, color.g, color.b)
-
-	if self.SafeZone then
-		self.SafeZone:Hide()
-	end
-end
-
 function UF:PostCastInterruptible(unit)
 	if unit == "vehicle" or unit == "player" then return end
 
@@ -429,8 +411,7 @@ function UF:PostCastInterruptible(unit)
 	if self.notInterruptible and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local _, Class = UnitClass(unit)
-		local t = Class and ElvUF.colors.class[Class]
+		local t = E.media.herocolor
 		if t then r, g, b = t[1], t[2], t[3] end
 	elseif UF.db.colors.castReactionColor then
 		local Reaction = UnitReaction(unit, "player")

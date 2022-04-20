@@ -11,7 +11,6 @@ function UF:Construct_DebuffHighlight(frame)
 	dbh:SetVertexColor(0, 0, 0, 0)
 	dbh:SetBlendMode("ADD")
 
-	frame.DebuffHighlightFilter = true
 	frame.DebuffHighlightAlpha = 0.45
 	frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors
 
@@ -37,7 +36,6 @@ function UF:Configure_DebuffHighlight(frame)
 		frame:EnableElement("DebuffHighlight")
 
 		frame.DebuffHighlight:SetBlendMode(UF.db.colors.debuffHighlight.blendMode)
-		frame.DebuffHighlight:SetAllPoints(frame.Health:GetStatusBarTexture())
 		frame.DebuffHighlightFilterTable = E.global.unitframe.DebuffHighlightColors
 
 		if E.db.unitframe.debuffHighlighting == "GLOW" then

@@ -13,7 +13,6 @@ local split = string.split
 local CreateFrame = CreateFrame
 local GetSpellInfo = GetSpellInfo
 local GetTime = GetTime
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local CREATED, VISIBLE, HIDDEN = 2, 1, 0
 
@@ -163,7 +162,7 @@ function NP:SetAura(frame, guid, index, filter, isDebuff, visible)
 
 			if isDebuff then
 				local color = (debuffType and DebuffTypeColor[debuffType]) or DebuffTypeColor.none
-				if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) and E.myclass ~= "WARLOCK" then
+				if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) then
 					self:StyleFrameColor(button, 0.05, 0.85, 0.94)
 				else
 					self:StyleFrameColor(button, color.r * 0.6, color.g * 0.6, color.b * 0.6)
@@ -260,9 +259,11 @@ function NP:UpdateElement_Auras(frame)
 	if not frame.Health:IsShown() then return end
 
 	local guid = frame.guid
+
 	if not guid then
-		if RAID_CLASS_COLORS[frame.UnitClass] then
-			guid = self:GetGUIDByName(frame.UnitName, frame.UnitType)
+		if frame.UnitClass == "DRUID" then
+			local name = frame.UnitName
+			guid = self.GUIDByName[name]
 		elseif frame.RaidIcon:IsShown() then
 			guid = ByRaidIcon[frame.RaidIconType]
 		end
@@ -319,12 +320,10 @@ function NP:UpdateElement_AurasByGUID(guid, event)
 		end
 	end
 
-	local frame = self:SearchForFrame(guid, raidIcon)
+	local frame = self:SearchForFrame(guid, raidIcon, destName)
 	if frame then
-		if frame.UnitType ~= "ENEMY_NPC" and not self.GUIDList[guid] then
-			self.GUIDList[guid] = {name = destName, unitType = frame.UnitType}
-		end
-
+		frame.guid = guid
+		self.GUIDByName[destName] = guid
 		self:UpdateElement_Auras(frame)
 	end
 end

@@ -3,9 +3,7 @@ local S = E:GetModule("Skins")
 
 --Lua functions
 local _G = _G
-local ipairs = ipairs
-local select = select
-local unpack = unpack
+local unpack, select = unpack, select
 --WoW API / Variables
 local GetInboxHeaderInfo = GetInboxHeaderInfo
 local GetInboxItemLink = GetInboxItemLink
@@ -52,9 +50,10 @@ S:AddCallback("Skin_Mail", function()
 		mail:StripTextures()
 		mail:CreateBackdrop("Transparent")
 		mail.backdrop:SetParent(button)
+		mail.backdrop:ClearAllPoints()
+		mail.backdrop:Point("TOPLEFT", mail, 45, -2)
+		mail.backdrop:Point("BOTTOMRIGHT", mail, 4, 9)
 		mail.backdrop:SetFrameLevel(mail:GetFrameLevel() - 1)
-		mail.backdrop:Point("TOPLEFT", mail, 44, -2)
-		mail.backdrop:Point("BOTTOMRIGHT", mail, 3, 9)
 
 		button:StripTextures()
 		button:CreateBackdrop()
@@ -116,9 +115,7 @@ S:AddCallback("Skin_Mail", function()
 		S:HandleTab(tab)
 	end
 
-	MailItem1:Point("TOPLEFT", 24, -80)
-
-	MailFrameTab1:Point("BOTTOMLEFT", 11, 46)
+	MailFrameTab1:Point("BOTTOMLEFT", MailFrame, 11, 46)
 	MailFrameTab2:Point("LEFT", MailFrameTab1, "RIGHT", -15, 0)
 
 	-- Send Mail Frame
@@ -246,18 +243,6 @@ S:AddCallback("Skin_Mail", function()
 		end
 	end)
 
-	hooksecurefunc("OpenMail_Update", function()
-		if not InboxFrame.openMailID then return end
-
-		local point, relativeTo, relativePoint, x, y = OpenMailAttachmentText:GetPoint()
-		OpenMailAttachmentText:Point(point, relativeTo, relativePoint, x + 1, y + 8)
-
-		for i, button in ipairs(OpenMailFrame.activeAttachmentButtons) do
-			point, relativeTo, relativePoint, x, y = button:GetPoint()
-			button:Point(point, relativeTo, relativePoint, x + 1, y + 5)
-		end
-	end)
-
 	S:HandleCloseButton(OpenMailCloseButton, OpenMailFrame.backdrop)
 
 	S:HandleButton(OpenMailReportSpamButton)
@@ -267,9 +252,7 @@ S:AddCallback("Skin_Mail", function()
 	S:HandleButton(OpenMailCancelButton)
 
 	OpenMailScrollFrame:StripTextures(true)
-	OpenMailScrollFrame:CreateBackdrop("Default")
-	OpenMailScrollFrame.backdrop:Point("TOPLEFT", -1, 3)
-	OpenMailScrollFrame.backdrop:Point("BOTTOMRIGHT", 1, -2)
+	OpenMailScrollFrame:SetTemplate("Default")
 
 	S:HandleScrollBar(OpenMailScrollFrameScrollBar)
 
@@ -300,14 +283,11 @@ S:AddCallback("Skin_Mail", function()
 
 	OpenMailMoneyButtonCount:SetDrawLayer("OVERLAY")
 
-	OpenMailBodyText:Width(288)
-	OpenMailBodyText:Point("TOPLEFT", 5, -3)
+	OpenMailScrollFrame:Width(304)
+	OpenMailScrollFrame:Point("TOPLEFT", 19, -92)
 
-	OpenMailScrollFrame:Width(302)
-	OpenMailScrollFrame:Point("TOPLEFT", 20, -91)
-
-	OpenMailScrollFrameScrollBar:Point("TOPLEFT", OpenMailScrollFrame, "TOPRIGHT", 4, -16)
-	OpenMailScrollFrameScrollBar:Point("BOTTOMLEFT", OpenMailScrollFrame, "BOTTOMRIGHT", 4, 17)
+	OpenMailScrollFrameScrollBar:Point("TOPLEFT", OpenMailScrollFrame, "TOPRIGHT", 3, -19)
+	OpenMailScrollFrameScrollBar:Point("BOTTOMLEFT", OpenMailScrollFrame, "BOTTOMRIGHT", 3, 19)
 
 	OpenMailSenderLabel:Point("TOPRIGHT", OpenMailFrame, "TOPLEFT", 85, -45)
 	OpenMailSubjectLabel:Point("TOPRIGHT", OpenMailFrame, "TOPLEFT", 85, -65)

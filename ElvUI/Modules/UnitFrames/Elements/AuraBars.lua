@@ -12,7 +12,6 @@ local IsControlKeyDown = IsControlKeyDown
 local UnitIsFriend = UnitIsFriend
 local UnitIsUnit = UnitIsUnit
 local UnitCanAttack = UnitCanAttack
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local function OnClick(self)
 	local mod = E.db.unitframe.auraBlacklistModifier
@@ -86,14 +85,6 @@ function UF:Configure_AuraBars(frame)
 		local buffColor = self.db.colors.auraBarBuff
 		local debuffColor = self.db.colors.auraBarDebuff
 		local attachTo = frame
-
-		if E:CheckClassColor(buffColor.r, buffColor.g, buffColor.b) then
-			buffColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		end
-
-		if E:CheckClassColor(debuffColor.r, debuffColor.g, debuffColor.b) then
-			debuffColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		end
 
 		if db.aurabar.attachTo == "BUFFS" then
 			attachTo = frame.Buffs
@@ -238,7 +229,7 @@ function UF:AuraBarFilter(unit, name, _, _, _, debuffType, duration, _, unitCast
 		isFriend = unit and UnitIsFriend("player", unit) and not UnitCanAttack("player", unit)
 		isPlayer = (unitCaster == "player" or unitCaster == "vehicle")
 		isUnit = unit and unitCaster and UnitIsUnit(unit, unitCaster)
-		canDispell = (self.type == "Buffs" and isStealable) or (self.type == "Debuffs" and debuffType and E:IsDispellableByMe(debuffType))
+		canDispell = (self.type == "Buffs" and isStealable) or (self.type == "Debuffs" and debuffType)
 		allowDuration = noDuration or (duration and (duration > 0) and (db.maxDuration == 0 or duration <= db.maxDuration) and (db.minDuration == 0 or duration >= db.minDuration))
 		filterCheck = UF:CheckFilter(name, unitCaster, spellID, isFriend, isPlayer, isUnit, allowDuration, noDuration, canDispell, strsplit(",", db.priority))
 	else

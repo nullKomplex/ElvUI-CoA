@@ -24,16 +24,12 @@ local critRating
 local displayModifierString = ""
 local lastPanel
 
-local function OnEvent(self, event)
+local function OnEvent(self)
 	lastPanel = self
-
-	if event == "SPELL_UPDATE_USABLE" then
-		self:UnregisterEvent(event)
-	end
 
 	if E.Role == "Caster"then
 		critRating = GetSpellCritChance(2)
-	elseif E.myclass == "HUNTER" then
+	elseif E.Role == "Ranged" then
 		critRating = GetRangedCritChance()
 	else
 		critRating = GetCritChance()
@@ -49,14 +45,12 @@ local function OnEnter(self)
 	if E.Role == "Caster" then
 		text = format("%s %.2f%%", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, SPELL_CRIT_CHANCE), critRating)
 		tooltip = format("%s %d", COMBAT_RATING_NAME11, GetCombatRating(11))
+	elseif E.Role == "Ranged" then
+		text = format("%s %.2f%%", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, RANGED_CRIT_CHANCE), critRating)
+		tooltip = format(CR_CRIT_RANGED_TOOLTIP, GetCombatRating(CR_CRIT_RANGED), GetCombatRatingBonus(CR_CRIT_RANGED))
 	else
-		if E.myclass == "HUNTER" then
-			text = format("%s %.2f%%", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, RANGED_CRIT_CHANCE), critRating)
-			tooltip = format(CR_CRIT_RANGED_TOOLTIP, GetCombatRating(CR_CRIT_RANGED), GetCombatRatingBonus(CR_CRIT_RANGED))
-		else
-			text = format("%s %.2f%%", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MELEE_CRIT_CHANCE), critRating)
-			tooltip = format(CR_CRIT_MELEE_TOOLTIP, GetCombatRating(CR_CRIT_MELEE), GetCombatRatingBonus(CR_CRIT_MELEE))
-		end
+		text = format("%s %.2f%%", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MELEE_CRIT_CHANCE), critRating)
+		tooltip = format(CR_CRIT_MELEE_TOOLTIP, GetCombatRating(CR_CRIT_MELEE), GetCombatRatingBonus(CR_CRIT_MELEE))
 	end
 
 	DT.tooltip:AddLine(text, 1, 1, 1)
@@ -74,4 +68,4 @@ local function ValueColorUpdate(hex)
 end
 E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
-DT:RegisterDatatext("Crit Chance", {"SPELL_UPDATE_USABLE", "ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE", "PLAYER_DAMAGE_DONE_MODS"}, OnEvent, nil, nil, OnEnter, nil, MELEE_CRIT_CHANCE)
+DT:RegisterDatatext("Crit Chance", {"ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE", "PLAYER_DAMAGE_DONE_MODS"}, OnEvent, nil, nil, OnEnter, nil, MELEE_CRIT_CHANCE)

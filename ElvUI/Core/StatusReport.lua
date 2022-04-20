@@ -41,83 +41,6 @@ local function GetDisplayMode()
 	return displayMode
 end
 
-local EnglishClassName = {
-	["DEATHKNIGHT"] = "Death Knight",
-	["DRUID"] = "Druid",
-	["HUNTER"] = "Hunter",
-	["MAGE"] = "Mage",
-	["PALADIN"] = "Paladin",
-	["PRIEST"] = "Priest",
-	["ROGUE"] = "Rogue",
-	["SHAMAN"] = "Shaman",
-	["WARLOCK"] = "Warlock",
-	["WARRIOR"] = "Warrior",
-}
-
-local EnglishSpecName = {
-	DEATHKNIGHT = {
-		"Blood",
-		"Frost",
-		"Unholy"
-	},
-	DRUID = {
-		"Balance",
-		"Feral",
-		"Guardian",
-		"Restoration"
-	},
-	HUNTER = {
-		"Beast Mastery",
-		"Marksmanship",
-		"Survival"
-	},
-	MAGE = {
-		"Arcane",
-		"Fire",
-		"Frost"
-	},
-	PALADIN = {
-		"Holy",
-		"Protection",
-		"Retribution"
-	},
-	PRIEST = {
-		"Discipline",
-		"Holy",
-		"Shadow"
-	},
-	ROGUE = {
-		"Assasination",
-		"Combat",
-		"Sublety"
-	},
-	SHAMAN = {
-		"Elemental",
-		"Enhancement",
-		"Restoration"
-	},
-	WARLOCK = {
-		"Affliction",
-		"Demonoligy",
-		"Destruction"
-	},
-	WARRIOR = {
-		"Arms",
-		"Fury",
-		"Protection"
-	}
-}
-
-local function GetSpecName()
-	local specIdx, specName = E:GetTalentSpecInfo()
-
-	if (specIdx and specIdx ~= 0) and (specName and specName ~= "") then
-		return EnglishSpecName[E.myclass][specIdx]
-	else
-		return "None"
-	end
-end
-
 local function GetResolution()
 	return (({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution"))
 end
@@ -202,7 +125,7 @@ function E:CreateStatusFrame()
 	--Title logo
 	StatusFrame.TitleLogoFrame = CreateFrame("Frame", nil, StatusFrame)
 	StatusFrame.TitleLogoFrame:Size(128, 64)
-	StatusFrame.TitleLogoFrame:SetPoint("CENTER", StatusFrame, "TOP", 0, 0)
+	StatusFrame.TitleLogoFrame:Point("CENTER", StatusFrame, "TOP", 0, 0)
 	StatusFrame.TitleLogoFrame.Texture = StatusFrame.TitleLogoFrame:CreateTexture(nil, "ARTWORK")
 	StatusFrame.TitleLogoFrame.Texture:SetTexture(E.Media.Textures.Logo)
 	StatusFrame.TitleLogoFrame.Texture:SetAllPoints()
@@ -222,10 +145,10 @@ function E:CreateStatusFrame()
 	--Section content
 	StatusFrame.Section1.Content = CreateContentLines(4, StatusFrame.Section1, StatusFrame.Section1.Header)
 	StatusFrame.Section2.Content = CreateContentLines(5, StatusFrame.Section2, StatusFrame.Section2.Header)
-	StatusFrame.Section3.Content = CreateContentLines(7, StatusFrame.Section3, StatusFrame.Section3.Header)
+	StatusFrame.Section3.Content = CreateContentLines(5, StatusFrame.Section3, StatusFrame.Section3.Header)
 	StatusFrame.Section4.Content = CreateFrame("Frame", nil, StatusFrame.Section4)
 	StatusFrame.Section4.Content:Size(240, 25)
-	StatusFrame.Section4.Content:SetPoint("TOP", StatusFrame.Section4.Header, "BOTTOM", 0, 0)
+	StatusFrame.Section4.Content:Point("TOP", StatusFrame.Section4.Header, "BOTTOM", 0, 0)
 
 	--Content lines
 	StatusFrame.Section1.Content.Line1.Text:SetFormattedText("Version of ElvUI: |cff4beb2c%s|r", E.version)
@@ -241,11 +164,9 @@ function E:CreateStatusFrame()
 
 	StatusFrame.Section3.Content.Line1.Text:SetFormattedText("Faction: |cff4beb2c%s|r", E.myfaction)
 	StatusFrame.Section3.Content.Line2.Text:SetFormattedText("Race: |cff4beb2c%s|r", E.myrace)
-	StatusFrame.Section3.Content.Line3.Text:SetFormattedText("Class: |cff4beb2c%s|r", EnglishClassName[E.myclass])
-	StatusFrame.Section3.Content.Line4.Text:SetFormattedText("Specialization: |cff4beb2c%s|r", GetSpecName())
-	StatusFrame.Section3.Content.Line5.Text:SetFormattedText("Level: |cff4beb2c%s|r", E.mylevel)
-	StatusFrame.Section3.Content.Line6.Text:SetFormattedText("Zone: |cff4beb2c%s|r", GetRealZoneText())
-	StatusFrame.Section3.Content.Line7.Text:SetFormattedText("Realm: |cff4beb2c%s|r", E.myrealm)
+	StatusFrame.Section3.Content.Line3.Text:SetFormattedText("Level: |cff4beb2c%s|r", E.mylevel)
+	StatusFrame.Section3.Content.Line4.Text:SetFormattedText("Zone: |cff4beb2c%s|r", GetRealZoneText())
+	StatusFrame.Section3.Content.Line5.Text:SetFormattedText("Realm: |cff4beb2c%s|r", E.myrealm)
 
 	--Export buttons
 	StatusFrame.Section4.Content.Button1 = CreateFrame("Button", nil, StatusFrame.Section4.Content, "UIPanelButtonTemplate")
@@ -268,7 +189,6 @@ end
 local function UpdateDynamicValues()
 	E.StatusFrame.Section2.Content.Line3.Text:SetFormattedText("Display Mode: |cff4beb2c%s|r", GetDisplayMode())
 	E.StatusFrame.Section2.Content.Line4.Text:SetFormattedText("Resolution: |cff4beb2c%s|r", GetResolution())
-	E.StatusFrame.Section3.Content.Line4.Text:SetFormattedText("Specialization: |cff4beb2c%s|r", GetSpecName())
 	E.StatusFrame.Section3.Content.Line5.Text:SetFormattedText("Level: |cff4beb2c%s|r", E.mylevel)
 	E.StatusFrame.Section3.Content.Line6.Text:SetFormattedText("Zone: |cff4beb2c%s|r", GetRealZoneText())
 end

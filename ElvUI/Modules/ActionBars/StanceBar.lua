@@ -70,7 +70,7 @@ function AB:StyleShapeShift()
 			if isActive then
 				button:GetCheckedTexture():SetTexture(1, 1, 1, 0.5)
 
-				if numForms == 1 and (E.myclass ~= "WARRIOR" and E.myclass ~= "DEATHKNIGHT") then
+				if numForms == 1 then
 					button:SetChecked(true)
 				else
 					button:SetChecked(self.db.stanceBar.style ~= "darkenInactive")

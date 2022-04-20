@@ -186,7 +186,7 @@ end
 function M:CreateFarmModeMap()
 	local fm = CreateFrame("Minimap", "FarmModeMap", E.UIParent)
 	fm:Size(E.db.farmSize)
-	fm:Point("TOP", 0, -120)
+	fm:Point("TOP", E.UIParent, "TOP", 0, -120)
 	fm:SetClampedToScreen(true)
 	fm:CreateBackdrop("Default")
 	fm:EnableMouseWheel(true)
@@ -266,7 +266,7 @@ function M:UpdateSettings()
 	E.MinimapWidth, E.MinimapHeight = E.MinimapSize, E.MinimapSize
 
 	if E.db.general.reminder.enable then
-		E.RBRWidth = (E.MinimapHeight + ((E.Border - E.Spacing*3) * 5) + E.Border*2) / 6
+		E.RBRWidth = (E.MinimapHeight + ((E.Border - E.Spacing*3) * 5) + E.Border*2) / 8
 	else
 		E.RBRWidth = 0
 	end
@@ -334,7 +334,7 @@ function M:UpdateSettings()
 	end
 
 	if MMHolder then
-		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth)
+		MMHolder:Width((Minimap:GetWidth() + E.Border*2 + E.Spacing*3) + E.RBRWidth * 2 - 2)
 
 		if E.db.datatexts.minimapPanels then
 			MMHolder:Height(Minimap:GetHeight() + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
@@ -408,7 +408,7 @@ function M:UpdateSettings()
 	if ElvConfigToggle then
 		if E.db.general.reminder.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
 			ElvConfigToggle:Show()
-			ElvConfigToggle:Width(E.RBRWidth)
+			ElvConfigToggle:Width(E.RBRWidth * 2)
 		else
 			ElvConfigToggle:Hide()
 		end
@@ -443,7 +443,7 @@ function M:Initialize()
 
 	local mmholder = CreateFrame("Frame", "MMHolder", Minimap)
 	mmholder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
-	mmholder:Width((Minimap:GetWidth() + 29) + E.RBRWidth)
+	mmholder:Width((Minimap:GetWidth() + 29) + E.RBRWidth * 2 - 2)
 	mmholder:Height(Minimap:GetHeight() + 53)
 	Minimap:ClearAllPoints()
 	if E.db.general.reminder.position == "LEFT" then
@@ -466,7 +466,7 @@ function M:Initialize()
 
 	Minimap.location = Minimap:CreateFontString(nil, "OVERLAY")
 	Minimap.location:FontTemplate(nil, nil, "OUTLINE")
-	Minimap.location:Point("TOP", 0, -2)
+	Minimap.location:Point("TOP", Minimap, "TOP", 0, -2)
 	Minimap.location:SetJustifyH("CENTER")
 	Minimap.location:SetJustifyV("MIDDLE")
 	if E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable then

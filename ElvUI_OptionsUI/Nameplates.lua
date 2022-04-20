@@ -655,7 +655,7 @@ local function UpdateFilterGroup()
 				combat = {
 					order = 7,
 					type = "group",
-					name = L["Unit Conditions"],
+					name = L["COMBAT"],
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
 						inCombat = {
@@ -681,19 +681,6 @@ local function UpdateFilterGroup()
 							end,
 							set = function(info, value)
 								E.global.nameplates.filters[selectedNameplateFilter].triggers.outOfCombat = value
-								NP:ConfigureAll()
-							end
-						},
-						isResting = {
-							order = 3,
-							type = "toggle",
-							name = L["Player is Resting"],
-							desc = L["If enabled then the filter will only activate when you are resting at an Inn."],
-							get = function(info)
-								return E.global.nameplates.filters[selectedNameplateFilter].triggers.isResting
-							end,
-							set = function(info, value)
-								E.global.nameplates.filters[selectedNameplateFilter].triggers.isResting = value
 								NP:ConfigureAll()
 							end
 						}
@@ -1872,7 +1859,7 @@ local ORDER = 100
 local function GetUnitSettings(unit, name)
 	local copyValues = {}
 	for x, y in pairs(NP.db.units) do
-		if type(y) == "table" and (x ~= unit) and (x ~= "TARGET") then
+		if type(y) == "table" and x ~= unit then
 			copyValues[x] = L[x]
 		end
 	end
@@ -3011,50 +2998,9 @@ local function GetUnitSettings(unit, name)
 						type = "toggle",
 						name = L["Enable"]
 					},
-					position = {
-						order = 2,
-						type = "select",
-						name = L["Position"],
-						values = {
-							["TOP"] = "TOP",
-							["LEFT"] = "LEFT",
-							["BOTTOM"] = "BOTTOM",
-							["CENTER"] = "CENTER",
-							["TOPLEFT"] = "TOPLEFT",
-							["BOTTOMLEFT"] = "BOTTOMLEFT",
-							["BOTTOMRIGHT"] = "BOTTOMRIGHT",
-							["RIGHT"] = "RIGHT",
-							["TOPRIGHT"] = "TOPRIGHT"
-						}
-					},
-					parent = {
-						order = 3,
-						type = "select",
-						name = L["Parent"],
-						values = {
-							["Nameplate"] = L["Nameplate"],
-							["Health"] = L["Health"]
-						}
-					},
-					xOffset = {
-						order = 4,
-						name = L["X-Offset"],
-						type = "range",
-						min = -100,
-						max = 100,
-						step = 1
-					},
-					yOffset = {
-						order = 5,
-						name = L["Y-Offset"],
-						type = "range",
-						min = -100,
-						max = 100,
-						step = 1
-					},
 					fontGroup = {
 						type = "group",
-						order = 6,
+						order = 2,
 						name = L["Fonts"],
 						guiInline = true,
 						get = function(info)
@@ -3115,47 +3061,6 @@ local function GetUnitSettings(unit, name)
 						order = 2,
 						type = "toggle",
 						name = L["Abbreviation"]
-					},
-					position = {
-						order = 3,
-						type = "select",
-						name = L["Position"],
-						values = {
-							["TOP"] = "TOP",
-							["LEFT"] = "LEFT",
-							["BOTTOM"] = "BOTTOM",
-							["CENTER"] = "CENTER",
-							["TOPLEFT"] = "TOPLEFT",
-							["BOTTOMLEFT"] = "BOTTOMLEFT",
-							["BOTTOMRIGHT"] = "BOTTOMRIGHT",
-							["RIGHT"] = "RIGHT",
-							["TOPRIGHT"] = "TOPRIGHT"
-						}
-					},
-					parent = {
-						order = 4,
-						type = "select",
-						name = L["Parent"],
-						values = {
-							["Nameplate"] = L["Nameplate"],
-							["Health"] = L["Health"]
-						}
-					},
-					xOffset = {
-						order = 5,
-						name = L["X-Offset"],
-						type = "range",
-						min = -100,
-						max = 100,
-						step = 1
-					},
-					yOffset = {
-						order = 6,
-						name = L["Y-Offset"],
-						type = "range",
-						min = -100,
-						max = 100,
-						step = 1
 					},
 					fontGroup = {
 						type = "group",
@@ -3359,7 +3264,7 @@ local function GetUnitSettings(unit, name)
 					order = 3,
 					type = "range",
 					name = L["Size"],
-					min = 8, max = 60, step = 1,
+					min = 8, max = 48, step = 1,
 				},
 				position = {
 					order = 4,
@@ -4093,29 +3998,8 @@ E.Options.args.nameplate = {
 						["style8"] = L["Background Glow"].." + "..L["Side Arrows"]
 					}
 				},
-				arrowSize = {
-					order = 6,
-					type = "range",
-					name = L["Arrow Size"],
-					min = 1,
-					max = 50,
-					step = 1,
-					isPercent = false
-				},
-				arrowXOffset = {
-					order = 7,
-					type = "range",
-					name = L["Arrow X-Offset"],
-					min = -20, max = 20, step = 1
-				},
-				arrowYOffset = {
-					order = 8,
-					type = "range",
-					name = L["Arrow Y-Offset"],
-					min = -20, max = 20, step = 1
-				},
 				alwaysShowTargetHealth = {
-					order = 9,
+					order = 7,
 					type = "toggle",
 					name = L["Always Show Target Health"],
 					get = function(info) return E.db.nameplates.alwaysShowTargetHealth end,
@@ -4126,7 +4010,7 @@ E.Options.args.nameplate = {
 					customWidth = 200
 				},
 				comboPointsGroup = {
-					order = 10,
+					order = 8,
 					type = "group",
 					name = L["COMBO_POINTS"],
 					guiInline = true,
@@ -4179,20 +4063,6 @@ E.Options.args.nameplate = {
 							disabled = function() return not E.db.nameplates.units.TARGET.comboPoints.enable end
 						}
 					}
-				},
-				arrows = {
-					order = 11,
-					name = L["Arrow Texture"],
-					type = "multiselect",
-					customWidth = 80,
-					get = function(info, key)
-						return E.db.nameplates.units.TARGET.arrow == key
-					end,
-					set = function(info, key, value)
-						E.db.nameplates.units.TARGET.arrow = key
-						NP:UpdateCVars()
-						NP:ConfigureAll()
-					end,
 				}
 			}
 		},
@@ -4266,15 +4136,6 @@ E.Options.args.nameplate = {
 		}
 	}
 }
-
-do -- target arrow textures
-	local arrows = {}
-	E.Options.args.nameplate.args.targetGroup.args.arrows.values = arrows
-
-	for key, arrow in pairs(E.Media.Arrows) do
-		arrows[key] = E:TextureString(arrow, ":45:45")
-	end
-end
 
 for i = 1, 5 do
 	E.Options.args.nameplate.args.generalGroup.args.colorsGroup.args.comboPoints.args["COMBO_POINTS" .. i] = {

@@ -7,6 +7,7 @@ local getmetatable = getmetatable
 local ipairs = ipairs
 local select = select
 local unpack = unpack
+local find = string.find
 --WoW API / Variables
 local GetCurrencyListInfo = GetCurrencyListInfo
 local GetInventoryItemQuality = GetInventoryItemQuality
@@ -174,7 +175,7 @@ S:AddCallback("Skin_Character", function()
 
 			popout.icon = popout:CreateTexture(nil, "ARTWORK")
 			popout.icon:Size(24)
-			popout.icon:SetPoint("CENTER")
+			popout.icon:Point("CENTER")
 			popout.icon:SetTexture(E.Media.Textures.ArrowUp)
 
 			if slotFrame.verticalFlyout then
@@ -211,8 +212,7 @@ S:AddCallback("Skin_Character", function()
 	end
 
 	hooksecurefunc(CharacterAmmoSlotIconTexture, "SetTexture", function(self, texture)
-		local parent = self:GetParent()
-		updateSlotFrame(parent, nil, 0, texture ~= parent.backgroundTextureName)
+		updateSlotFrame(self:GetParent(), nil, 0, texture ~= "Interface\\PaperDoll\\UI-PaperDoll-Slot-Ranged")
 	end)
 
 	local f = CreateFrame("Frame")
@@ -275,6 +275,7 @@ S:AddCallback("Skin_Character", function()
 			frame:SetTemplate("Default")
 
 			if i ~= 1 then
+				frame:ClearAllPoints()
 				frame:Point("TOP", _G[frameName..i-1], "BOTTOM", 0, -(E.Border + E.Spacing))
 			end
 
@@ -611,13 +612,24 @@ S:AddCallback("Skin_Character", function()
 
 	SkillFrameExpandButtonFrame:StripTextures()
 
-	S:HandleCollapseExpandButton(SkillFrameCollapseAllButton, "+")
+	SkillFrameCollapseAllButton:SetNormalTexture(E.Media.Textures.Plus)
+	SkillFrameCollapseAllButton.SetNormalTexture = E.noop
+	SkillFrameCollapseAllButton:GetNormalTexture():Size(16)
+	SkillFrameCollapseAllButton:SetHighlightTexture(nil)
+
+	hooksecurefunc(SkillFrameCollapseAllButton, "SetNormalTexture", function(self, texture)
+		if find(texture, "MinusButton") then
+			SkillFrameCollapseAllButton:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
+		else
+			SkillFrameCollapseAllButton:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
+		end
+	end)
 
 	for i = 1, SKILLS_TO_DISPLAY do
 		local statusBar = _G["SkillRankFrame"..i]
 		local statusBarBorder = _G["SkillRankFrame"..i.."Border"]
 		local statusBarBackground = _G["SkillRankFrame"..i.."Background"]
-		local skillTypeLabel = _G["SkillTypeLabel"..i]
+		local skillTypeLabelText = _G["SkillTypeLabel"..i]
 
 		statusBar:Width(276)
 		statusBar:CreateBackdrop("Default")
@@ -627,7 +639,18 @@ S:AddCallback("Skin_Character", function()
 		statusBarBorder:StripTextures()
 		statusBarBackground:SetTexture(nil)
 
-		S:HandleCollapseExpandButton(skillTypeLabel, "+")
+		skillTypeLabelText:SetNormalTexture(E.Media.Textures.Plus)
+		skillTypeLabelText.SetNormalTexture = E.noop
+		skillTypeLabelText:GetNormalTexture():Size(16)
+		skillTypeLabelText:SetHighlightTexture(nil)
+
+		hooksecurefunc(skillTypeLabelText, "SetNormalTexture", function(self, texture)
+			if find(texture, "MinusButton") then
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
+			else
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
+			end
+		end)
 	end
 
 	SkillDetailStatusBar:StripTextures()

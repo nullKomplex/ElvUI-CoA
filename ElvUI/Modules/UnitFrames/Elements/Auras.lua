@@ -362,7 +362,7 @@ function UF:PostUpdateAura(unit, button)
 			button.icon:SetDesaturated((unit and not find(unit, "arena%d")) and true or false)
 		else
 			local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-			if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) and E.myclass ~= "WARLOCK" then
+			if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) then
 				button:SetBackdropBorderColor(0.05, 0.85, 0.94)
 			else
 				button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
@@ -410,7 +410,7 @@ function UF:AuraFilter(unit, button, name, _, _, _, debuffType, duration, expira
 
 	if db.priority ~= "" then
 		local isUnit = unit and caster and UnitIsUnit(unit, caster)
-		local canDispell = (self.type == "buffs" and isStealable) or (self.type == "debuffs" and debuffType and E:IsDispellableByMe(debuffType))
+		local canDispell = (self.type == "buffs" and isStealable) or (self.type == "debuffs" and debuffType)
 		filterCheck, spellPriority = UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allowDuration, noDuration, canDispell, split(",", db.priority))
 		if spellPriority then button.priority = spellPriority end -- this is the only difference from auarbars code
 	else

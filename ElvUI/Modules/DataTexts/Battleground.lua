@@ -10,7 +10,6 @@ local GetBattlefieldStatData = GetBattlefieldStatData
 local GetBattlefieldStatInfo = GetBattlefieldStatInfo
 local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetNumBattlefieldStats = GetNumBattlefieldStats
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local displayString = ""
 local lastPanel
@@ -58,7 +57,7 @@ function DT:BattlegroundStats()
 		for i = 1, GetNumBattlefieldScores() do
 			local name = GetBattlefieldScore(i)
 			if name and name == E.myname then
-				local classColor = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass]) or RAID_CLASS_COLORS[E.myclass]
+				local classColor = E.media.herocolor
 
 				DT.tooltip:AddDoubleLine(L["Stats For:"], name, 1, 1, 1, classColor.r, classColor.g, classColor.b)
 				DT.tooltip:AddLine(" ")

@@ -4,6 +4,7 @@ local S = E:GetModule("Skins")
 --Lua functions
 local _G = _G
 local unpack = unpack
+local find = string.find
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -47,7 +48,19 @@ S:AddCallback("Skin_LFD", function()
 		button.enableButton:CreateBackdrop("Default")
 		button.enableButton.backdrop:SetInside(nil, 4, 4)
 
-		S:HandleCollapseExpandButton(button.expandOrCollapseButton, "+")
+		button.expandOrCollapseButton:SetNormalTexture(E.Media.Textures.Plus)
+		button.expandOrCollapseButton.SetNormalTexture = E.noop
+		button.expandOrCollapseButton:GetNormalTexture():Size(16)
+
+		button.expandOrCollapseButton:SetHighlightTexture(nil)
+
+		hooksecurefunc(button.expandOrCollapseButton, "SetNormalTexture", function(self, texture)
+			if find(texture, "MinusButton") then
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Minus)
+			elseif find(texture, "PlusButton") then
+				self:GetNormalTexture():SetTexture(E.Media.Textures.Plus)
+			end
+		end)
 	end
 
 	LFDQueueFrameSpecificListScrollFrame:StripTextures()

@@ -804,3 +804,5 @@ if(global) then
 		_G[global] = oUF
 	end
 end
+
+oUF.herocolor = {0.0, 1.0, 0.0}

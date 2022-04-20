@@ -3,8 +3,6 @@ local AB = E:GetModule("ActionBars")
 
 --Lua functions
 local _G = _G
-local unpack = unpack
-local gsub, match = string.gsub, string.match
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local InCombatLockdown = InCombatLockdown
@@ -91,8 +89,8 @@ function AB:UpdateMicroBarVisibility()
 	end
 
 	local visibility = self.db.microbar.visibility
-	if visibility and match(visibility, "[\n\r]") then
-		visibility = gsub(visibility, "[\n\r]", "")
+	if visibility and string.match(visibility, "[\n\r]") then
+		visibility = string.gsub(visibility, "[\n\r]", "")
 	end
 
 	RegisterStateDriver(ElvUI_MicroBar.visibility, "visibility", (self.db.microbar.enabled and visibility) or "hide")
@@ -147,6 +145,21 @@ function AB:UpdateMicroPositionDimensions()
 	self:UpdateMicroBarVisibility()
 end
 
+function AB:UpdateMicroButtons()
+	-- PvP Micro Button
+	PVPMicroButtonTexture:Point("TOPLEFT", PVPMicroButton, "TOPLEFT")
+	PVPMicroButtonTexture:Point("BOTTOMRIGHT", PVPMicroButton, "BOTTOMRIGHT")
+	PVPMicroButtonTexture:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PVP-Icons")
+
+	if E.mylevel < PVPMicroButton.minLevel then
+		PVPMicroButtonTexture:SetDesaturated(true)
+	else
+		PVPMicroButtonTexture:SetDesaturated(false)
+	end
+
+	self:UpdateMicroPositionDimensions()
+end
+
 function AB:SetupMicroBar()
 	local microBar = CreateFrame("Frame", "ElvUI_MicroBar", E.UIParent)
 	microBar:Point("TOPLEFT", E.UIParent, "TOPLEFT", 4, -48)
@@ -163,11 +176,7 @@ function AB:SetupMicroBar()
 		self:HandleMicroButton(_G[MICRO_BUTTONS[i]])
 	end
 
-	MicroButtonPortrait:SetAllPoints()
-
-	-- PvP Micro Button
-	PVPMicroButtonTexture:SetAllPoints()
-	PVPMicroButtonTexture:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\PVP-Icons]])
+	MicroButtonPortrait:SetInside(CharacterMicroButton.backdrop)
 
 	if E.myfaction == "Alliance" then
 		PVPMicroButtonTexture:SetTexCoord(0.545, 0.935, 0.070, 0.940)
@@ -176,6 +185,7 @@ function AB:SetupMicroBar()
 	end
 
 	self:SecureHook("VehicleMenuBar_MoveMicroButtons", "UpdateMicroButtonsParent")
+	self:SecureHook("UpdateMicroButtons")
 
 	self:UpdateMicroPositionDimensions()
 	MainMenuBarPerformanceBar:Kill()

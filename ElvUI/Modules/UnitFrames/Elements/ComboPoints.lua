@@ -11,8 +11,6 @@ local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 local CombobarDetached
 function UF:CombobarDetachedUpdate()
-	if E.myclass ~= "DRUID" then return end
-
 	if ElvUF_Target.CLASSBAR_DETACHED and UF.db.units.target.combobar.parent == "UIPARENT" then
 		if not CombobarDetached then
 			CombobarDetached = CreateFrame("Frame", nil, UIParent)
@@ -60,15 +58,14 @@ function UF:Construct_Combobar(frame)
 	frame:RegisterEvent("UNIT_ENTERED_VEHICLE", UF.UpdateComboDisplay)
 	frame:RegisterEvent("UNIT_EXITING_VEHICLE", UF.UpdateComboDisplay)
 
-	if E.myclass == "DRUID" then
-		frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UF.UpdateComboDisplay)
+	-- Do combo points change when you change forms on ascension?
+	frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UF.UpdateComboDisplay)
 
-		frame:RegisterEvent("PLAYER_ENTERING_WORLD", function()
-			E:ShapeshiftDelayedUpdate(ElvUF_Target.ComboPoints.Override, ElvUF_Target)
-		end)
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+		E:ShapeshiftDelayedUpdate(ElvUF_Target.ComboPoints.Override, ElvUF_Target)
+	end)
 
-		self:CombobarDetachedUpdate()
-	end
+	self:CombobarDetachedUpdate()
 
 	ComboPoints.Override = UF.UpdateComboDisplay
 	ComboPoints:SetScript("OnShow", UF.ToggleResourceBar)
@@ -165,7 +162,7 @@ function UF:Configure_ComboPoints(frame)
 
 	if frame.USE_MINI_CLASSBAR and not frame.CLASSBAR_DETACHED then
 		ComboPoints:ClearAllPoints()
-		ComboPoints:SetPoint("CENTER", frame.Health.backdrop, "TOP", 0, 0)
+		ComboPoints:Point("CENTER", frame.Health.backdrop, "TOP", 0, 0)
 
 		ComboPoints:SetParent(frame)
 		ComboPoints:SetFrameLevel(50) --RaisedElementParent uses 100, we want it lower than this
@@ -260,39 +257,34 @@ function UF:UpdateComboDisplay(event, unit)
 	if db.combobar.enable then
 		local inVehicle = UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")
 
-		if not inVehicle and E.myclass ~= "ROGUE" and (E.myclass ~= "DRUID" or (E.myclass == "DRUID" and GetShapeshiftForm() ~= 3)) then
+		local cp
+		if inVehicle then
+			cp = GetComboPoints("vehicle", "target")
+		else
+			cp = GetComboPoints("player", "target")
+		end
+
+		local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
+		if cp == 0 and db.combobar.autoHide then
 			element:Hide()
 			UF.ToggleResourceBar(element)
 		else
-			local cp
-			if inVehicle then
-				cp = GetComboPoints("vehicle", "target")
-			else
-				cp = GetComboPoints("player", "target")
-			end
-
-			local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
-			if cp == 0 and db.combobar.autoHide then
-				element:Hide()
-				UF.ToggleResourceBar(element)
-			else
-				element:Show()
-				for i = 1, MAX_COMBO_POINTS do
-					if i <= cp then
-						element[i]:Show()
-					else
-						element[i]:Hide()
-					end
-
-					if custom_backdrop then
-						element[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
-					else
-						local r, g, b = element[i]:GetStatusBarColor()
-						element[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
-					end
+			element:Show()
+			for i = 1, MAX_COMBO_POINTS do
+				if i <= cp then
+					element[i]:Show()
+				else
+					element[i]:Hide()
 				end
-				UF.ToggleResourceBar(element)
+
+				if custom_backdrop then
+					element[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
+				else
+					local r, g, b = element[i]:GetStatusBarColor()
+					element[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
+				end
 			end
+			UF.ToggleResourceBar(element)
 		end
 	else
 		element:Hide()

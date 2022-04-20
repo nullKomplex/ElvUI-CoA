@@ -22,16 +22,12 @@ local hasteRating
 local displayNumberString = ""
 local lastPanel
 
-local function OnEvent(self, event)
+local function OnEvent(self)
 	lastPanel = self
-
-	if event == "SPELL_UPDATE_USABLE" then
-		self:UnregisterEvent(event)
-	end
 
 	if E.Role == "Caster" then
 		hasteRating = GetCombatRating(CR_HASTE_SPELL)
-	elseif E.myclass == "HUNTER" then
+	elseif E.Role == "Ranged" then
 		hasteRating = GetCombatRating(CR_HASTE_RANGED)
 	else
 		hasteRating = GetCombatRating(CR_HASTE_MELEE)
@@ -47,7 +43,7 @@ local function OnEnter(self)
 	if E.Role == "Caster" then
 		text = format("%s %d", SPELL_HASTE, hasteRating)
 		tooltip = format(SPELL_HASTE_TOOLTIP, GetCombatRatingBonus(CR_HASTE_SPELL))
-	elseif E.myclass == "HUNTER" then
+	elseif E.Role == "Ranged" then
 		text = format("%s %.2f", format(PAPERDOLLFRAME_TOOLTIP_FORMAT, ATTACK_SPEED), UnitRangedDamage("player"))
 		tooltip = format(CR_HASTE_RATING_TOOLTIP, hasteRating, GetCombatRatingBonus(CR_HASTE_RANGED))
 	else
@@ -77,4 +73,4 @@ local function ValueColorUpdate(hex)
 end
 E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
-DT:RegisterDatatext("Haste", {"SPELL_UPDATE_USABLE", "ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE", "UNIT_ATTACK_SPEED", "UNIT_SPELL_HASTE"}, OnEvent, nil, nil, OnEnter, nil, SPELL_HASTE)
+DT:RegisterDatatext("Haste", {"ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE", "UNIT_ATTACK_SPEED", "UNIT_SPELL_HASTE"}, OnEvent, nil, nil, OnEnter, nil, SPELL_HASTE)

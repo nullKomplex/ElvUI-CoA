@@ -145,9 +145,9 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 
 	local _, anchor = tt:GetPoint()
 
-	if anchor == nil or (ElvUI_ContainerFrame and anchor == ElvUI_ContainerFrame) or anchor == RightChatPanel or anchor == ElvTooltipMover or anchor == _G.UIParent or anchor == E.UIParent then
+	if anchor == nil or (ElvUI_ContainerFrame and anchor == ElvUI_ContainerFrame) or anchor == RightChatPanel or anchor == TooltipMover or anchor == _G.UIParent or anchor == E.UIParent then
 		tt:ClearAllPoints()
-		if not E:HasMoverBeenMoved("ElvTooltipMover") then
+		if not E:HasMoverBeenMoved("TooltipMover") then
 			if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
 				tt:Point("BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
 			elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
@@ -156,15 +156,15 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 				tt:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
 			end
 		else
-			local point = E:GetScreenQuadrant(ElvTooltipMover)
+			local point = E:GetScreenQuadrant(TooltipMover)
 			if point == "TOPLEFT" then
-				tt:Point("TOPLEFT", ElvTooltipMover, "BOTTOMLEFT")
+				tt:Point("TOPLEFT", TooltipMover, "BOTTOMLEFT")
 			elseif point == "TOPRIGHT" then
-				tt:Point("TOPRIGHT", ElvTooltipMover, "BOTTOMRIGHT")
+				tt:Point("TOPRIGHT", TooltipMover, "BOTTOMRIGHT")
 			elseif point == "BOTTOMLEFT" or point == "LEFT" then
-				tt:Point("BOTTOMLEFT", ElvTooltipMover, "TOPLEFT")
+				tt:Point("BOTTOMLEFT", TooltipMover, "TOPLEFT")
 			else
-				tt:Point("BOTTOMRIGHT", ElvTooltipMover, "TOPRIGHT")
+				tt:Point("BOTTOMRIGHT", TooltipMover, "TOPRIGHT")
 			end
 		end
 	end
@@ -222,11 +222,7 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 		local guildName, guildRankName = GetGuildInfo(unit)
 		local pvpName = UnitPVPName(unit)
 
-		color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-
-		if not color then
-			color = RAID_CLASS_COLORS.PRIEST
-		end
+		color = E.media.herocolor
 
 		if self.db.playerTitles and pvpName then
 			name = pvpName
@@ -280,7 +276,7 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 		end
 
 		if not color then
-			color = RAID_CLASS_COLORS.PRIEST
+			color = E.media.herocolor
 		end
 
 		local levelLine = self:GetLevelLine(tt, 2)
@@ -312,12 +308,7 @@ function TT:INSPECT_TALENT_READY(event, unit)
 	end
 
 	local itemLevel = self:GetItemLvL(unit)
-	local _, specName = E:GetTalentSpecInfo(true)
 	inspectCache[self.lastGUID] = {time = GetTime()}
-
-	if specName then
-		inspectCache[self.lastGUID].specName = specName
-	end
 
 	if itemLevel then
 		inspectCache[self.lastGUID].itemLevel = itemLevel
@@ -332,17 +323,12 @@ function TT:ShowInspectInfo(tt, unit, r, g, b)
 
 	local GUID = UnitGUID(unit)
 	if GUID == E.myguid then
-		local _, specName = E:GetTalentSpecInfo()
-
-		tt:AddDoubleLine(L["Talent Specialization:"], specName, nil, nil, nil, r, g, b)
 		tt:AddDoubleLine(L["Item Level:"], self:GetItemLvL("player"), nil, nil, nil, 1, 1, 1)
 		return
 	elseif inspectCache[GUID] then
-		local specName = inspectCache[GUID].specName
 		local itemLevel = inspectCache[GUID].itemLevel
 
-		if (GetTime() - inspectCache[GUID].time) < 900 and specName and itemLevel then
-			tt:AddDoubleLine(L["Talent Specialization:"], specName, nil, nil, nil, r, g, b)
+		if (GetTime() - inspectCache[GUID].time) < 900 and itemLevel then
 			tt:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
 			return
 		else
@@ -393,14 +379,13 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if unit ~= "player" and UnitExists(unitTarget) then
 			local targetColor
 			if UnitIsPlayer(unitTarget) and not UnitHasVehicleUI(unitTarget) then
-				local _, class = UnitClass(unitTarget)
-				targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+				targetColor = E.media.herocolor
 			else
 				targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unitTarget, "player")] or FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]
 			end
 
 			if not targetColor then
-				targetColor = RAID_CLASS_COLORS.PRIEST
+				targetColor = E.media.herocolor
 			end
 
 			tt:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
@@ -415,12 +400,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				local groupUnit = (inRaid and "raid"..i or "party"..i)
 
 				if not UnitIsUnit(groupUnit, "player") and UnitIsUnit(groupUnit.."target", unit) then
-					local _, class = UnitClass(groupUnit)
-					local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-
-					if not classColor then
-						classColor = RAID_CLASS_COLORS.PRIEST
-					end
+					local classColor = E.media.herocolor
 
 					tinsert(targetList, format("%s%s", E:RGBToHex(classColor.r, classColor.g, classColor.b), UnitName(groupUnit)))
 				end
@@ -580,8 +560,7 @@ function TT:SetUnitAura(tt, ...)
 	if id and self.db.spellID then
 		if caster then
 			local name = UnitName(caster)
-			local _, class = UnitClass(caster)
-			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+			local color = E.media.herocolor
 			tt:AddDoubleLine(format("|cFFCA3C3C%s|r %d", ID, id), format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
 		else
 			tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
@@ -691,7 +670,7 @@ function TT:Initialize()
 	GameTooltip.StatusBar:Height(self.db.healthBar.height)
 	GameTooltip.StatusBar:SetScript("OnValueChanged", nil)
 	GameTooltip.StatusBar.text = GameTooltip.StatusBar:CreateFontString(nil, "OVERLAY")
-	GameTooltip.StatusBar.text:SetPoint("CENTER")
+	GameTooltip.StatusBar.text:Point("CENTER", GameTooltip.StatusBar, 0, 0)
 	GameTooltip.StatusBar.text:FontTemplate(E.Libs.LSM:Fetch("font", self.db.healthBar.font), self.db.healthBar.fontSize, self.db.healthBar.fontOutline)
 
 	--Tooltip Fonts
@@ -707,7 +686,7 @@ function TT:Initialize()
 	GameTooltipAnchor:Point("BOTTOMRIGHT", RightChatToggleButton, "BOTTOMRIGHT")
 	GameTooltipAnchor:Size(130, 20)
 	GameTooltipAnchor:SetFrameLevel(GameTooltipAnchor:GetFrameLevel() + 400)
-	E:CreateMover(GameTooltipAnchor, "ElvTooltipMover", L["Tooltip"], nil, nil, nil, nil, nil, "tooltip,general")
+	E:CreateMover(GameTooltipAnchor, "TooltipMover", L["Tooltip"], nil, nil, nil, nil, nil, "tooltip,general")
 
 	self:SecureHook(ItemRefTooltip, "SetHyperlink")
 	self:SecureHook("GameTooltip_SetDefaultAnchor")

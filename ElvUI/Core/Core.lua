@@ -48,14 +48,13 @@ local IsInInstance = IsInInstance
 local SendAddonMessage = SendAddonMessage
 local UnitGUID = UnitGUID
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 --Constants
 E.noop = function() end
 E.title = format("|cff1784d1E|r|cffe5e3e3lvUI|r")
 E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
 E.mylevel = UnitLevel("player")
-E.myLocalizedClass, E.myclass = UnitClass("player")
+E.myLocalizedClass, E.myclass = UnitClass("player")  -- On Ascension, this is always (Hero, DRUID)
 E.myLocalizedRace, E.myrace = UnitRace("player")
 E.myname = UnitName("player")
 E.myrealm = GetRealmName()
@@ -96,59 +95,6 @@ E.InversePoints = {
 	CENTER = "CENTER"
 }
 
-E.HealingClasses = {
-	PALADIN = 1,
-	SHAMAN = 3,
-	DRUID = 3,
-	PRIEST = {1, 2}
-}
-
-E.ClassRole = {
-	PALADIN = {
-		[0] = "Melee",
-		[1] = "Caster",
-		[2] = "Tank",
-		[3] = "Melee"
-	},
-	PRIEST = "Caster",
-	WARLOCK = "Caster",
-	WARRIOR = {
-		[0] = "Melee",
-		[1] = "Melee",
-		[2] = "Melee",
-		[3] = "Tank"
-	},
-	HUNTER = "Melee",
-	SHAMAN = {
-		[0] = "Caster",
-		[1] = "Caster",
-		[2] = "Melee",
-		[3] = "Caster"
-	},
-	ROGUE = "Melee",
-	MAGE = "Caster",
-	DEATHKNIGHT = {
-		[0] = "Melee",
-		[1] = "Tank",
-		[2] = "Melee",
-		[3] = "Melee"
-	},
-	DRUID = {
-		[0] = "Caster",
-		[1] = "Caster",
-		[2] = "Melee",
-		[3] = "Caster"
-	}
-}
-
-E.DispelClasses = {
-	PRIEST = {Magic = true, Disease = true},
-	SHAMAN = {Poison = true, Disease = true, Curse = false},
-	PALADIN = {Poison = true, Magic = true, Disease = true},
-	MAGE = {Curse = true},
-	DRUID = {Curse = true, Poison = true}
-}
-
 local colorizedName
 function E:ColorizedName(name, arg2)
 	local length = strlen(name)
@@ -166,9 +112,6 @@ function E:ColorizedName(name, arg2)
 	end
 	return colorizedName
 end
-
---Workaround for people wanting to use white and it reverting to their class color.
-E.PriestColors = {r = 0.99, g = 0.99, b = 0.99}
 
 --This frame everything in ElvUI should be anchored to for Eyefinity support.
 E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent)
@@ -227,23 +170,6 @@ function E:GrabColorPickerValues(r, g, b)
 	ColorPickerFrame.noColorCallback = nil
 
 	return r, g, b
-end
-
---Basically check if another class border is being used on a class that doesn't match. And then return true if a match is found.
-function E:CheckClassColor(r, g, b)
-	r, g, b = E:GrabColorPickerValues(r, g, b)
-	local matchFound = false
-	for class in pairs(RAID_CLASS_COLORS) do
-		if class ~= E.myclass then
-			local colorTable = class == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class])
-			local red, green, blue = E:GrabColorPickerValues(colorTable.r, colorTable.g, colorTable.b)
-			if red == r and green == g and blue == b then
-				matchFound = true
-			end
-		end
-	end
-
-	return matchFound
 end
 
 function E:SetColorTable(t, data)
@@ -308,23 +234,10 @@ function E:UpdateMedia()
 
 	-- Border Color
 	local border = E.db.general.bordercolor
-	if self:CheckClassColor(border.r, border.g, border.b) then
-		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		E.db.general.bordercolor.r = classColor.r
-		E.db.general.bordercolor.g = classColor.g
-		E.db.general.bordercolor.b = classColor.b
-	end
-
 	self.media.bordercolor = {border.r, border.g, border.b}
 
 	-- UnitFrame Border Color
 	border = E.db.unitframe.colors.borderColor
-	if self:CheckClassColor(border.r, border.g, border.b) then
-		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		E.db.unitframe.colors.borderColor.r = classColor.r
-		E.db.unitframe.colors.borderColor.g = classColor.g
-		E.db.unitframe.colors.borderColor.b = classColor.b
-	end
 	self.media.unitframeBorderColor = {border.r, border.g, border.b}
 
 	-- Backdrop Color
@@ -336,15 +249,13 @@ function E:UpdateMedia()
 	-- Value Color
 	local value = self.db.general.valuecolor
 
-	if self:CheckClassColor(value.r, value.g, value.b) then
-		value = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-		self.db.general.valuecolor.r = value.r
-		self.db.general.valuecolor.g = value.g
-		self.db.general.valuecolor.b = value.b
-	end
-
 	self.media.hexvaluecolor = self:RGBToHex(value.r, value.g, value.b)
 	self.media.rgbvaluecolor = {value.r, value.g, value.b}
+
+	-- Hero Color
+	local herocolor = E.db.general.herocolor
+	self.media.herocolor = herocolor
+	self.oUF.herocolor = {herocolor.r, herocolor.g, herocolor. b}
 
 	if LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex then
 		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft)
@@ -897,8 +808,8 @@ function E:UpdateAll(ignoreInstall)
 		Chat:UpdateAnchors()
 	end
 
-	DataBars:ExperienceBar_Toggle()
-	DataBars:ReputationBar_Toggle()
+	DataBars:EnableDisable_ExperienceBar()
+	DataBars:EnableDisable_ReputationBar()
 	DataBars:UpdateDataBarDimensions()
 
 	DataTexts:LoadDataTexts()
@@ -916,10 +827,8 @@ function E:UpdateAll(ignoreInstall)
 	Threat:ToggleEnable()
 	Threat:UpdatePosition()
 
-	if E.myclass == "SHAMAN" then
-		Totems:ToggleEnable()
-		Totems:PositionAndSize()
-	end
+	Totems:ToggleEnable()
+	Totems:PositionAndSize()
 
 	if E.private.unitframe.enable then
 		UnitFrames:Update_AllFrames()
@@ -1109,141 +1018,127 @@ end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
-	do -- <= 6.07
-		--Fix issue where UIScale was incorrectly stored as string
-		E.global.general.UIScale = tonumber(E.global.general.UIScale)
+	--Fix issue where UIScale was incorrectly stored as string
+	E.global.general.UIScale = tonumber(E.global.general.UIScale)
 
-		--Not sure how this one happens, but prevent it in any case
-		if E.global.general.UIScale <= 0 then
-			E.global.general.UIScale = G.general.UIScale
+	--Not sure how this one happens, but prevent it in any case
+	if E.global.general.UIScale <= 0 then
+		E.global.general.UIScale = G.general.UIScale
+	end
+
+	if gameLocale and E.global.general.locale == "auto" then
+		E.global.general.locale = gameLocale
+	end
+
+	--Combat & Resting Icon options update
+	if E.db.unitframe.units.player.combatIcon ~= nil then
+		E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
+		E.db.unitframe.units.player.combatIcon = nil
+	end
+	if E.db.unitframe.units.player.restIcon ~= nil then
+		E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
+		E.db.unitframe.units.player.restIcon = nil
+	end
+
+	-- [Fader] Combat Fade options for Player
+	if E.db.unitframe.units.player.combatfade ~= nil then
+		local enabled = E.db.unitframe.units.player.combatfade
+		E.db.unitframe.units.player.fader.enable = enabled
+
+		if enabled then -- use the old min alpha too
+			E.db.unitframe.units.player.fader.minAlpha = 0
 		end
 
-		if gameLocale and E.global.general.locale == "auto" then
-			E.global.general.locale = gameLocale
+		E.db.unitframe.units.player.combatfade = nil
+	end
+
+	-- [Fader] Range check options for Units
+	do
+		local outsideAlpha
+		if E.db.unitframe.OORAlpha ~= nil then
+			outsideAlpha = E.db.unitframe.OORAlpha
+			E.db.unitframe.OORAlpha = nil
 		end
 
-		--Combat & Resting Icon options update
-		if E.db.unitframe.units.player.combatIcon ~= nil then
-			E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
-			E.db.unitframe.units.player.combatIcon = nil
-		end
-		if E.db.unitframe.units.player.restIcon ~= nil then
-			E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
-			E.db.unitframe.units.player.restIcon = nil
-		end
+		local rangeCheckUnits = {"target", "targettarget", "targettargettarget", "focus", "focustarget", "pet", "pettarget", "boss", "arena", "party", "raid", "raid40", "raidpet", "tank", "assist"}
+		for _, unit in pairs(rangeCheckUnits) do
+			if E.db.unitframe.units[unit].rangeCheck ~= nil then
+				local enabled = E.db.unitframe.units[unit].rangeCheck
+				E.db.unitframe.units[unit].fader.enable = enabled
+				E.db.unitframe.units[unit].fader.range = enabled
 
-		-- [Fader] Combat Fade options for Player
-		if E.db.unitframe.units.player.combatfade ~= nil then
-			local enabled = E.db.unitframe.units.player.combatfade
-			E.db.unitframe.units.player.fader.enable = enabled
-
-			if enabled then -- use the old min alpha too
-				E.db.unitframe.units.player.fader.minAlpha = 0
-			end
-
-			E.db.unitframe.units.player.combatfade = nil
-		end
-
-		-- [Fader] Range check options for Units
-		do
-			local outsideAlpha
-			if E.db.unitframe.OORAlpha ~= nil then
-				outsideAlpha = E.db.unitframe.OORAlpha
-				E.db.unitframe.OORAlpha = nil
-			end
-
-			local rangeCheckUnits = {"target", "targettarget", "targettargettarget", "focus", "focustarget", "pet", "pettarget", "boss", "arena", "party", "raid", "raid40", "raidpet", "tank", "assist"}
-			for _, unit in pairs(rangeCheckUnits) do
-				if E.db.unitframe.units[unit].rangeCheck ~= nil then
-					local enabled = E.db.unitframe.units[unit].rangeCheck
-					E.db.unitframe.units[unit].fader.enable = enabled
-					E.db.unitframe.units[unit].fader.range = enabled
-
-					if outsideAlpha then
-						E.db.unitframe.units[unit].fader.minAlpha = outsideAlpha
-					end
-
-					E.db.unitframe.units[unit].rangeCheck = nil
+				if outsideAlpha then
+					E.db.unitframe.units[unit].fader.minAlpha = outsideAlpha
 				end
+
+				E.db.unitframe.units[unit].rangeCheck = nil
 			end
-		end
-
-		--Convert old "Buffs and Debuffs" font size option to individual options
-		if E.db.auras.fontSize then
-			local fontSize = E.db.auras.fontSize
-			E.db.auras.buffs.countFontSize = fontSize
-			E.db.auras.buffs.durationFontSize = fontSize
-			E.db.auras.debuffs.countFontSize = fontSize
-			E.db.auras.debuffs.durationFontSize = fontSize
-			E.db.auras.fontSize = nil
-		end
-
-		--Convert old private cooldown setting to profile setting
-		if E.private.cooldown and (E.private.cooldown.enable ~= nil) then
-			E.db.cooldown.enable = E.private.cooldown.enable
-			E.private.cooldown.enable = nil
-			E.private.cooldown = nil
-		end
-
-		if not E.db.chat.panelColorConverted then
-			local color = E.db.general.backdropfadecolor
-			E.db.chat.panelColor = {r = color.r, g = color.g, b = color.b, a = color.a}
-			E.db.chat.panelColorConverted = true
-		end
-
-		--Convert cropIcon to tristate
-		local cropIcon = E.db.general.cropIcon
-		if type(cropIcon) == "boolean" then
-			E.db.general.cropIcon = (cropIcon and 2) or 0
-		end
-
-		--Vendor Greys option is now in bags table
-		if E.db.general.vendorGrays then
-			E.db.bags.vendorGrays.enable = E.db.general.vendorGrays
-			E.db.general.vendorGrays = nil
-			E.db.general.vendorGraysDetails = nil
-		end
-
-		--Heal Prediction is now a table instead of a bool
-		local healPredictionUnits = {"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}
-		for _, unit in pairs(healPredictionUnits) do
-			if type(E.db.unitframe.units[unit].healPrediction) ~= "table" then
-				local enabled = E.db.unitframe.units[unit].healPrediction
-				E.db.unitframe.units[unit].healPrediction = {}
-				E.db.unitframe.units[unit].healPrediction.enable = enabled
-			end
-		end
-
-		--Health Backdrop Multiplier
-		if E.db.unitframe.colors.healthmultiplier ~= nil then
-			if E.db.unitframe.colors.healthmultiplier > 0.75 then
-				E.db.unitframe.colors.healthMultiplier = 0.75
-			else
-				E.db.unitframe.colors.healthMultiplier = E.db.unitframe.colors.healthmultiplier
-			end
-
-			E.db.unitframe.colors.healthmultiplier = nil
-		end
-
-		if sub(E.db.chat.timeStampFormat, -1) == " " then
-			E.db.chat.timeStampFormat = sub(E.db.chat.timeStampFormat, 1, -2)
-		end
-
-		if E.private.skins.blizzard.greeting ~= nil then
-			E.private.skins.blizzard.greeting = nil
 		end
 	end
 
-	do -- <= 6.08
-		--Rename GameTooltip Mover
-		if E.db.movers and E.db.movers.TooltipMover then
-			E.db.movers.ElvTooltipMover = E.db.movers.TooltipMover
-			E.db.movers.TooltipMover = nil
+	--Convert old "Buffs and Debuffs" font size option to individual options
+	if E.db.auras.fontSize then
+		local fontSize = E.db.auras.fontSize
+		E.db.auras.buffs.countFontSize = fontSize
+		E.db.auras.buffs.durationFontSize = fontSize
+		E.db.auras.debuffs.countFontSize = fontSize
+		E.db.auras.debuffs.durationFontSize = fontSize
+		E.db.auras.fontSize = nil
+	end
+
+	--Convert old private cooldown setting to profile setting
+	if E.private.cooldown and (E.private.cooldown.enable ~= nil) then
+		E.db.cooldown.enable = E.private.cooldown.enable
+		E.private.cooldown.enable = nil
+		E.private.cooldown = nil
+	end
+
+	if not E.db.chat.panelColorConverted then
+		local color = E.db.general.backdropfadecolor
+		E.db.chat.panelColor = {r = color.r, g = color.g, b = color.b, a = color.a}
+		E.db.chat.panelColorConverted = true
+	end
+
+	--Convert cropIcon to tristate
+	local cropIcon = E.db.general.cropIcon
+	if type(cropIcon) == "boolean" then
+		E.db.general.cropIcon = (cropIcon and 2) or 0
+	end
+
+	--Vendor Greys option is now in bags table
+	if E.db.general.vendorGrays then
+		E.db.bags.vendorGrays.enable = E.db.general.vendorGrays
+		E.db.general.vendorGrays = nil
+		E.db.general.vendorGraysDetails = nil
+	end
+
+	--Heal Prediction is now a table instead of a bool
+	local healPredictionUnits = {"player", "target", "focus", "pet", "arena", "party", "raid", "raid40", "raidpet"}
+	for _, unit in pairs(healPredictionUnits) do
+		if type(E.db.unitframe.units[unit].healPrediction) ~= "table" then
+			local enabled = E.db.unitframe.units[unit].healPrediction
+			E.db.unitframe.units[unit].healPrediction = {}
+			E.db.unitframe.units[unit].healPrediction.enable = enabled
+		end
+	end
+
+	--Health Backdrop Multiplier
+	if E.db.unitframe.colors.healthmultiplier ~= nil then
+		if E.db.unitframe.colors.healthmultiplier > 0.75 then
+			E.db.unitframe.colors.healthMultiplier = 0.75
+		else
+			E.db.unitframe.colors.healthMultiplier = E.db.unitframe.colors.healthmultiplier
 		end
 
-		if E.db.databars.experience.questXP and E.db.databars.experience.questXP.showBubbles then
-			E.db.databars.experience.showBubbles = true
-		end
+		E.db.unitframe.colors.healthmultiplier = nil
+	end
+
+	if sub(E.db.chat.timeStampFormat, -1) == " " then
+		E.db.chat.timeStampFormat = sub(E.db.chat.timeStampFormat, 1, -2)
+	end
+
+	if E.private.skins.blizzard.greeting ~= nil then
+		E.private.skins.blizzard.greeting = nil
 	end
 end
 
@@ -1293,15 +1188,6 @@ function E:Initialize()
 
 	if not self.private.install_complete then
 		self:Install()
-	end
-
-	if self:HelloKittyFixCheck() then
-		self:HelloKittyFix()
-	end
-
-	if self.db.general.kittys then
-		self:CreateKittys()
-		self:Delay(5, self.Print, self, L["Type /hellokitty to revert to old settings."])
 	end
 
 	if self.db.general.loginmessage then

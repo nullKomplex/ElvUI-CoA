@@ -21,8 +21,7 @@ function NP:Update_HealthColor(frame)
 	local r, g, b
 	local scale = 1
 
-	local class = frame.UnitClass
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+	local classColor = E.media.herocolor
 	local useClassColor = NP.db.units[frame.UnitType].health.useClassColor
 	if classColor and ((frame.UnitType == "FRIENDLY_PLAYER" and useClassColor) or (frame.UnitType == "ENEMY_PLAYER" and useClassColor)) then
 		r, g, b = classColor.r, classColor.g, classColor.b
@@ -102,8 +101,6 @@ function NP:Update_HealthColor(frame)
 end
 
 function NP:Update_Health(frame)
-	if not frame.Health:IsShown() then return end
-
 	local health = frame.oldHealthBar:GetValue()
 	local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
 	frame.Health:SetMinMaxValues(0, maxHealth)

@@ -12,7 +12,6 @@ local IsLoggedIn = IsLoggedIn
 local IsShiftKeyDown = IsShiftKeyDown
 local CURRENCY = CURRENCY
 local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local currencyString = "|T%s:14:14:0:0:64:64:4:60:4:60|t %s"
 local resetCountersFormatter = string.join("", "|cffaaaaaa", L["Reset Counters: Hold Shift + Left Click"], "|r")
@@ -31,8 +30,7 @@ local function BuildDataTable()
 
 	for charName in pairs(ElvDB.gold[E.myrealm]) do
 		if ElvDB.gold[E.myrealm][charName] then
-			local class = ElvDB.class[E.myrealm][charName] or "PRIEST"
-			local color = class and (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class])
+			local color = E.media.herocolor
 
 			tinsert(dataTable,
 				{

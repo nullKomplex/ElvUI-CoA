@@ -9,7 +9,6 @@ local wipe = table.wipe
 local GetNumPartyMembers = GetNumPartyMembers
 local GetNumRaidMembers = GetNumRaidMembers
 local GetThreatStatusColor = GetThreatStatusColor
-local UnitClass = UnitClass
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local UnitExists = UnitExists
 local UnitIsPlayer = UnitIsPlayer
@@ -17,7 +16,6 @@ local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitReaction = UnitReaction
 
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UNKNOWN = UNKNOWN
 
 local partyUnits, raidUnits = {}, {}
@@ -51,8 +49,7 @@ end
 
 function THREAT:GetColor(unit)
 	if UnitIsPlayer(unit) then
-		local _, unitClass = UnitClass(unit)
-		local class = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[unitClass] or RAID_CLASS_COLORS[unitClass]
+		local class = E.media.herocolor
 		if not class then
 			return 194, 194, 194
 		end
@@ -162,7 +159,7 @@ function THREAT:Initialize()
 
 	self.bar.text = self.bar:CreateFontString(nil, "OVERLAY")
 	self.bar.text:FontTemplate(nil, self.db.textSize)
-	self.bar.text:SetPoint("CENTER")
+	self.bar.text:Point("CENTER", self.bar, "CENTER")
 
 	self.list = {}
 

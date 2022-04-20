@@ -40,7 +40,6 @@ function UF:Construct_RaidFrames()
 	self.TargetGlow = UF:Construct_TargetGlow(self)
 
 	self.ThreatIndicator = UF:Construct_Threat(self)
-	self.GroupRoleIndicator = UF:Construct_RoleIcon(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 	self.ReadyCheckIndicator = UF:Construct_ReadyCheckIcon(self)
 	self.HealCommBar = UF:Construct_HealComm(self)
@@ -219,9 +218,6 @@ function UF:Update_RaidFrames(frame, db)
 
 	--GPS Arrow
 	UF:Configure_GPS(frame)
-
-	--Role
-	UF:Configure_RoleIcon(frame)
 
 	--Raid Roles
 	UF:Configure_RaidRoleIcons(frame)

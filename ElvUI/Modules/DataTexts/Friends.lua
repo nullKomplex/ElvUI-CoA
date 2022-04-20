@@ -23,7 +23,6 @@ local UnitIsDND = UnitIsDND
 local AFK = AFK
 local DND = DND
 local FRIENDS = FRIENDS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local tthead = {r=0.4, g=0.78, b=1}
 local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
@@ -156,7 +155,7 @@ local function OnClick(_, btn)
 				end
 
 				if not shouldSkip then
-					classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]]
+					classc = E.media.herocolor
 					classc = classc or GetQuestDifficultyColor(info[2])
 					levelc = GetQuestDifficultyColor(info[2])
 
@@ -238,7 +237,7 @@ local function OnEnter(self)
 					zonec = inactivezone
 				end
 
-				classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]]
+				classc = E.media.herocolor
 				classc = classc or GetQuestDifficultyColor(info[2])
 				levelc = GetQuestDifficultyColor(info[2])
 
@@ -265,8 +264,8 @@ local function OnEvent(self, event, message)
 	lastPanel = self
 
 	-- special handler to detect friend coming online or going offline
-	if event == "CHAT_MSG_SYSTEM" and not (find(message, friendOnlineString) or find(message, friendOfflineString)) then
-		return
+	if event == "CHAT_MSG_SYSTEM" then
+		if not (find(message, friendOnlineString) or find(message, friendOfflineString)) then return end
 	end
 
 	local _, onlineFriends = GetNumFriends()

@@ -49,7 +49,7 @@ S:AddCallback("Skin_Gossip", function()
 		for i = 1, GossipFrame.buttonIndex do
 			local button = _G["GossipTitleButton"..i]
 
-			if button:GetText() and find(button:GetText(), "|cff000000") then
+			if button and button:GetText() and find(button:GetText(), "|cff000000") then
 				button:SetText(gsub(button:GetText(), "|cff000000", "|cffFFFF00"))
 			end
 		end

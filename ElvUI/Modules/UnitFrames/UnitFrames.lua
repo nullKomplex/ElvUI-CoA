@@ -46,7 +46,6 @@ UF.badHeaderPoints = {
 
 UF.headerFunctions = {}
 UF.classMaxResourceBar = {
-	["DEATHKNIGHT"] = 6,
 	["DRUID"] = 1
 }
 
@@ -298,6 +297,10 @@ function UF:GetAuraAnchorFrame(frame, attachTo, isConflict)
 		return frame.Health
 	elseif attachTo == "POWER" and frame.Power then
 		return frame.Power
+	elseif attachTo == "ENERGY" and frame.Energy then
+		return frame.Energy
+	elseif attachTo == "RAGE" and frame.Rage then
+		return frame.Rage
 	else
 		return frame
 	end
@@ -713,7 +716,7 @@ function UF.groupPrototype:AdjustVisibility(frame)
 					UF:UnshowChildUnits(group, group:GetChildren())
 					group:SetAttribute("startingIndex", 1)
 				else
-					group:Reset(frame.groupName)
+					group:Reset()
 				end
 			end
 		end
@@ -751,14 +754,14 @@ function UF.headerPrototype:Update()
 	end
 end
 
-function UF.headerPrototype:Reset(group)
+function UF.headerPrototype:Reset()
 	self:Hide()
 
 	self:SetAttribute("showPlayer", true)
 
 	self:SetAttribute("showSolo", true)
 	self:SetAttribute("showParty", true)
-	self:SetAttribute("showRaid", group ~= "party" and true or false)
+	self:SetAttribute("showRaid", true)
 
 	self:SetAttribute("columnSpacing", nil)
 	self:SetAttribute("columnAnchorPoint", nil)
@@ -783,7 +786,7 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 	local header = ElvUF:SpawnHeader(overrideName, headerTemplate, nil,
 			"groupFilter", groupFilter,
 			"showParty", true,
-			"showRaid", group ~= "party" and true or false,
+			"showRaid", group == "party" and false or true,
 			"showSolo", true,
 			template and "template", template)
 
@@ -1352,7 +1355,7 @@ function UF:Initialize()
 
 	for k in pairs(UnitPopupMenus) do
 		for x, y in pairs(UnitPopupMenus[k]) do
-			if y == "SET_FOCUS" or y == "CLEAR_FOCUS" or y == "LOCK_FOCUS_FRAME" or y == "UNLOCK_FOCUS_FRAME" or (E.myclass == "HUNTER" and y == "PET_DISMISS") then
+			if y == "SET_FOCUS" or y == "CLEAR_FOCUS" or y == "LOCK_FOCUS_FRAME" or y == "UNLOCK_FOCUS_FRAME" then
 				tremove(UnitPopupMenus[k], x)
 			end
 		end
@@ -1401,7 +1404,6 @@ function UF:Initialize()
 	local ORD = ns.oUF_RaidDebuffs or oUF_RaidDebuffs
 	if ORD then
 		ORD.ShowDispellableDebuff = true
-		ORD.FilterDispellableDebuff = true
 		ORD.MatchBySpellName = true
 	end
 

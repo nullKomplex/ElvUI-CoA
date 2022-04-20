@@ -67,7 +67,7 @@ local function OnEvent(self)
 	if parry <= 0 then parry = 0 end
 	if block <= 0 then block = 0 end
 
-	if E.myclass == "DRUID" and GetBonusBarOffset() == 3 then
+	if GetBonusBarOffset() == 3 then
 		parry = 0
 	end
 

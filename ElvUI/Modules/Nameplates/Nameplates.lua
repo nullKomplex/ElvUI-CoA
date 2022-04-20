@@ -20,21 +20,14 @@ local GetPlayerInfoByGUID = GetPlayerInfoByGUID
 local InCombatLockdown = InCombatLockdown
 local IsInInstance = IsInInstance
 local SetCVar = SetCVar
-local UnitClass = UnitClass
 local UnitExists = UnitExists
-local UnitFactionGroup = UnitFactionGroup
 local UnitGUID = UnitGUID
 local UnitHealthMax = UnitHealthMax
-local UnitIsFriend = UnitIsFriend
 local UnitIsPlayer = UnitIsPlayer
-local UnitIsUnit = UnitIsUnit
-local UnitReaction = UnitReaction
 local UnitName = UnitName
 local WorldFrame = WorldFrame
 local WorldGetChildren = WorldFrame.GetChildren
 local WorldGetNumChildren = WorldFrame.GetNumChildren
-
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local lastChildern, numChildren, hasTarget = 0, 0
 local OVERLAY = [=[Interface\TargetingFrame\UI-TargetingFrame-Flash]=]
@@ -51,10 +44,8 @@ NP.CreatedPlates = {}
 NP.VisiblePlates = {}
 NP.Healers = {}
 
-NP.GUIDList = {}
+NP.GUIDByName = {}
 
-NP.UnitByName = {}
-NP.NameByUnit = {}
 NP.ENEMY_PLAYER = {}
 NP.FRIENDLY_PLAYER = {}
 NP.ENEMY_NPC = {}
@@ -66,10 +57,10 @@ NP.Totems = {}
 NP.UniqueUnits = {}
 
 function NP:CheckBGHealers()
-	local name, _, classToken, damageDone, healingDone
+	local name, _, damageDone, healingDone
 	for i = 1, GetNumBattlefieldScores() do
-		name, _, _, _, _, _, _, _, _, classToken, damageDone, healingDone = GetBattlefieldScore(i)
-		if name and classToken and E.HealingClasses[classToken] then
+		name, _, _, _, _, _, _, _, _, _, damageDone, healingDone = GetBattlefieldScore(i)
+		if name then
 			name = match(name, "([^%-]+).*")
 			if name and healingDone > (damageDone * 2) then
 				self.Healers[name] = true
@@ -223,42 +214,22 @@ function NP:StyleFrameColor(frame, r, g, b)
 end
 
 function NP:GetUnitByName(frame, unitType)
-	local unit = self.UnitByName[frame.UnitName] or self[unitType][frame.UnitName]
+	local unit = self[unitType][frame.UnitName]
 	if unit then
 		return unit
 	end
 end
 
 function NP:GetUnitClassByGUID(frame, guid)
-	if not guid then
-		guid = self:GetGUIDByName(frame.UnitName, frame.UnitType)
-	end
-
+	if not guid then guid = self.GUIDByName[frame.UnitName] end
 	if guid then
 		local _, _, class = pcall(GetPlayerInfoByGUID, guid)
 		return class
 	end
 end
 
-local grenColorToClass = {}
-for class, color in pairs(RAID_CLASS_COLORS) do
-	grenColorToClass[color.g] = class
-end
-
 function NP:UnitClass(frame, unitType)
-	if unitType == "FRIENDLY_PLAYER" then
-		if frame.unit then
-			local _, class = UnitClass(frame.unit)
-			if class then
-				return class
-			end
-		else
-			return NP:GetUnitClassByGUID(frame, frame.guid)
-		end
-	elseif unitType == "ENEMY_PLAYER" then
-		local _, g = frame.oldHealthBar:GetStatusBarColor()
-		return grenColorToClass[floor(g*100 + 0.5) / 100]
-	end
+	return "DRUID"
 end
 
 function NP:UnitDetailedThreatSituation(frame)
@@ -310,29 +281,6 @@ function NP:GetUnitInfo(frame)
 	return 3, "ENEMY_PLAYER"
 end
 
-function NP:GetUnitTypeFromUnit(unit)
-	local reaction = UnitReaction("player", unit)
-	local isPlayer = UnitIsPlayer(unit)
-
-	if isPlayer and UnitIsFriend("player", unit) and reaction and reaction >= 5 then
-		return "FRIENDLY_PLAYER"
-	elseif not isPlayer and (reaction and reaction >= 5) or UnitFactionGroup(unit) == "Neutral" then
-		return "FRIENDLY_NPC"
-	elseif not isPlayer and (reaction and reaction <= 4) then
-		return "ENEMY_NPC"
-	else
-		return "ENEMY_PLAYER"
-	end
-end
-
-function NP:GetGUIDByName(name, unitType)
-	for guid, info in pairs(self.GUIDList) do
-		if info.name == name and info.unitType == unitType then
-			return guid
-		end
-	end
-end
-
 function NP:OnShow(isConfig, dontHideHighlight)
 	local frame = self.UnitFrame
 	NP:CheckRaidIcon(frame)
@@ -341,24 +289,28 @@ function NP:OnShow(isConfig, dontHideHighlight)
 		NP.VisiblePlates[frame] = 1
 	end
 
-	frame.UnitName = gsub(frame.oldName:GetText() or "", FSPAT, "")
+	frame.UnitName = gsub(frame.oldName:GetText(), FSPAT, "")
 	local reaction, unitType = NP:GetUnitInfo(frame)
-	local oldUnitType = frame.UnitType
-	frame.UnitType = unitType
 	frame.UnitReaction = reaction
 
 	local unit = NP:GetUnitByName(frame, unitType)
 	if unit then
 		frame.unit = unit
 		frame.isGroupUnit = true
-		frame.guid = UnitGUID(unit)
-	else
-		frame.guid = NP:GetGUIDByName(frame.UnitName, unitType)
+
+		local guid = NP.GUIDByName[frame.UnitName] or UnitGUID(unit)
+		if guid then
+			frame.guid = guid
+		end
+	elseif unitType ~= "ENEMY_NPC" then
+		frame.guid = NP.GUIDByName[frame.UnitName]
 	end
 
 	frame.UnitClass = NP:UnitClass(frame, unitType)
 
-	if unitType ~= oldUnitType or isConfig then
+	if unitType ~= frame.UnitType or isConfig then
+		frame.UnitType = unitType
+
 		NP:Update_HealthBar(frame)
 
 		NP:Configure_CPoints(frame, true)
@@ -733,17 +685,21 @@ function NP:SetTargetFrame(frame)
 
 				self:Configure_HealthBar(frame)
 				self:Configure_CastBar(frame)
+
 				self:Configure_Elite(frame)
 				self:Configure_CPoints(frame)
 
 				self:RegisterEvents(frame)
 
 				self:UpdateElement_All(frame, true)
+
+				self:Configure_Glow(frame)
 			end
 
 			NP:PlateFade(frame, NP.db.fadeIn and 1 or 0, frame:GetAlpha(), 1)
 
 			self:Update_Highlight(frame)
+			self:Update_Glow(frame)
 			self:Update_CPoints(frame)
 			self:StyleFilterUpdate(frame, "PLAYER_TARGET_CHANGED")
 			self:ForEachVisiblePlate("ResetNameplateFrameLevel") --keep this after `StyleFilterUpdate`
@@ -768,6 +724,8 @@ function NP:SetTargetFrame(frame)
 
 		if not self.db.units[frame.UnitType].health.enable then
 			self:UpdateAllFrame(frame, nil, true)
+		else
+			self:Update_Glow(frame)
 		end
 
 		self:Update_CPoints(frame)
@@ -801,9 +759,6 @@ function NP:SetTargetFrame(frame)
 			self:StyleFilterUpdate(frame, "PLAYER_TARGET_CHANGED")
 		end
 	end
-
-	self:Configure_Glow(frame)
-	self:Update_Glow(frame)
 end
 
 function NP:SetMouseoverFrame(frame)
@@ -887,7 +842,7 @@ end
 
 function NP:SearchNameplateByGUID(guid)
 	for frame in pairs(self.VisiblePlates) do
-		if frame.guid == guid then
+		if frame and frame:IsShown() and frame.guid == guid then
 			return frame
 		end
 	end
@@ -897,7 +852,7 @@ function NP:SearchNameplateByName(sourceName)
 	if not sourceName then return end
 	local SearchFor = split("-", sourceName)
 	for frame in pairs(self.VisiblePlates) do
-		if frame.UnitName == SearchFor and RAID_CLASS_COLORS[frame.UnitClass] then
+		if frame and frame:IsShown() and frame.UnitName == SearchFor and frame.UnitClass == "DRUID" then
 			return frame
 		end
 	end
@@ -906,7 +861,7 @@ end
 function NP:SearchNameplateByIconName(raidIcon)
 	for frame in pairs(self.VisiblePlates) do
 		self:CheckRaidIcon(frame)
-		if frame.RaidIcon:IsShown() and (frame.RaidIconType == raidIcon) then
+		if frame and frame:IsShown() and frame.RaidIcon:IsShown() and (frame.RaidIconType == raidIcon) then
 			return frame
 		end
 	end
@@ -969,50 +924,16 @@ function NP:PLAYER_TARGET_CHANGED()
 end
 
 function NP:UPDATE_MOUSEOVER_UNIT()
-	if not UnitIsUnit("mouseover", "player") and UnitIsPlayer("mouseover") then
+	if UnitIsPlayer("mouseover")then
 		local name = UnitName("mouseover")
-		local guid = UnitGUID("mouseover")
-		local unitType = self:GetUnitTypeFromUnit("mouseover")
-		for frame in pairs(self.VisiblePlates) do
-			if frame.UnitName == name and frame.UnitType == unitType then
-				if not self.GUIDList[guid] then
-					self.GUIDList[guid] = {name = name, unitType = frame.UnitType}
-					self.OnShow(frame:GetParent(), nil, true)
-					break
+		for frame in pairs(NP.VisiblePlates) do
+			if frame.UnitName == name then
+				local guid = UnitGUID("mouseover")
+				if NP.GUIDByName[name] ~= guid then
+					NP.GUIDByName[name] = guid
+					NP.OnShow(frame:GetParent(), nil, true)
 				end
 			end
-		end
-	end
-end
-
-function NP:PLAYER_FOCUS_CHANGED()
-	local unitName
-
-	if UnitIsPlayer("focus") and not UnitIsUnit("focus", "player") then
-		local name = UnitName("focus")
-		local guid = UnitGUID("focus")
-
-		self.UnitByName[name] = "focus"
-		self.NameByUnit.focus = name
-
-		if not self.GUIDList[guid] then
-			self.GUIDList[guid] = {name = name, unitType = self:GetUnitTypeFromUnit("focus")}
-		end
-
-		unitName = name
-	elseif self.NameByUnit.focus then
-		self.UnitByName[self.NameByUnit.focus] = nil
-		unitName = self.NameByUnit.focus
-		self.NameByUnit.focus = nil
-	end
-
-	if not unitName then
-		return
-	end
-
-	for frame in pairs(self.VisiblePlates) do
-		if frame.UnitName == unitName then
-			self:UpdateAllFrame(frame, nil, true)
 		end
 	end
 end
@@ -1061,37 +982,8 @@ function NP:PLAYER_REGEN_ENABLED()
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "PLAYER_REGEN_ENABLED")
 end
 
-function NP:UNIT_HEALTH(_, unit)
-	if unit ~= "player" then return end
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_HEALTH")
-end
-
-function NP:UNIT_MANA(_, unit)
-	if unit ~= "player" then return end
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_MANA")
-end
-
-function NP:UNIT_ENERGY(_, unit)
-	if unit ~= "player" then return end
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_ENERGY")
-end
-
-function NP:UNIT_FOCUS(_, unit)
-	if unit ~= "player" then return end
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_FOCUS")
-end
-
-function NP:UNIT_RAGE(_, unit)
-	if unit ~= "player" then return end
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "UNIT_RAGE")
-end
-
 function NP:SPELL_UPDATE_COOLDOWN(...)
 	NP:ForEachVisiblePlate("StyleFilterUpdate", "SPELL_UPDATE_COOLDOWN")
-end
-
-function NP:PLAYER_UPDATE_RESTING()
-	NP:ForEachVisiblePlate("StyleFilterUpdate", "PLAYER_UPDATE_RESTING")
 end
 
 function NP:RAID_TARGET_UPDATE()
@@ -1174,7 +1066,7 @@ function NP:TogleTestFrame(unitType)
 		elseif unitType == "FRIENDLY_PLAYER" then
 			unitFrame.oldHealthBar:SetStatusBarColor(0, 0, 1)
 		else
-			local color = RAID_CLASS_COLORS[E.myclass]
+			local color = E.media.herocolor
 			unitFrame.oldHealthBar:SetStatusBarColor(color.r, color.g, color.b)
 		end
 
@@ -1236,14 +1128,6 @@ function NP:Initialize()
 
 	self:StyleFrame(ElvNP_Test, true)
 	self:OnCreated(ElvNP_Test)
-	local castbar = ElvNP_Test.UnitFrame.CastBar
-	castbar:SetParent(ElvNP_Test.UnitFrame.Health)
-	castbar.Hide = castbar.Show
-	castbar:Show()
-	castbar.Name:SetText("Casting")
-	castbar.Time:SetText("3.1")
-	castbar.Icon.texture:SetTexture([[Interface\Icons\Spell_Holy_Penance]])
-	castbar:SetStatusBarColor(self.db.colors.castColor.r, self.db.colors.castColor.g, self.db.colors.castColor.b)
 	ElvNP_Test:Hide()
 
 	self.Frame = CreateFrame("Frame"):SetScript("OnUpdate", self.OnUpdate)
@@ -1253,18 +1137,10 @@ function NP:Initialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_LOGOUT", self.StyleFilterClearDefaults)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
-	self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-	self:RegisterEvent("PLAYER_UPDATE_RESTING")
 	self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	self:RegisterEvent("RAID_TARGET_UPDATE")
-	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
-	self:RegisterEvent("UNIT_COMBO_POINTS")
-	self:RegisterEvent("UNIT_HEALTH")
-	self:RegisterEvent("UNIT_MANA")
-	self:RegisterEvent("UNIT_ENERGY")
-	self:RegisterEvent("UNIT_FOCUS")
-	self:RegisterEvent("UNIT_RAGE")
 
+	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 	-- Arena & Arena Pets
 	self:CacheArenaUnits()
 	self:RegisterEvent("ARENA_OPPONENT_UPDATE", "CacheArenaUnits")
@@ -1283,6 +1159,7 @@ function NP:Initialize()
 	LAI.RegisterCallback(self, "LibAuraInfo_AURA_APPLIED_DOSE")
 	LAI.RegisterCallback(self, "LibAuraInfo_AURA_CLEAR")
 	LAI.RegisterCallback(self, "LibAuraInfo_UNIT_AURA")
+	self:RegisterEvent("UNIT_COMBO_POINTS")
 end
 
 local function InitializeCallback()

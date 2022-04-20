@@ -7,7 +7,6 @@ local format, split = string.format, string.split
 local FauxScrollFrame_GetOffset = FauxScrollFrame_GetOffset
 local GetBattlefieldScore = GetBattlefieldScore
 local IsActiveBattlefieldArena = IsActiveBattlefieldArena
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 S:AddCallback("Skin_WorldStateScore", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.bgscore then return end
@@ -91,7 +90,7 @@ S:AddCallback("Skin_WorldStateScore", function()
 					name = format("%s|cffffffff - |r%s%s|r", name, color, realm)
 				end
 
-				classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classToken] or RAID_CLASS_COLORS[classToken]
+				classTextColor = E.media.herocolor
 
 				nameText = _G["WorldStateScoreButton"..i.."NameText"]
 				nameText:SetText(name)

@@ -23,7 +23,6 @@ local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
 local GUILD = GUILD
 local GUILD_MOTD = GUILD_MOTD
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local tthead, ttsubh, ttoff = {r=0.4, g=0.78, b=1}, {r=0.75, g=0.9, b=1}, {r=0.3,g=1,b=0.3}
 local activezone, inactivezone = {r=0.3, g=1.0, b=0.3}, {r=0.65, g=0.65, b=0.65}
@@ -39,8 +38,8 @@ local noteFormat = join("", "|cff999999   ", LABEL_NOTE, ":|r %s")
 local officerNoteFormat = join("", "|cff999999   ", GUILD_RANK1_DESC, ":|r %s")
 
 local inGroupStamp = "|cffaaaaaa*|r"
-local friendOnlineString = string.gsub(ERR_FRIEND_ONLINE_SS, ".+|h", "")
-local friendOfflineString = string.gsub(ERR_FRIEND_OFFLINE_S, "%%s", "")
+local friendOnlineString = select(2, string.split(" ", ERR_FRIEND_ONLINE_SS, 2))
+local friendOfflineString = select(2, string.split(" ", ERR_FRIEND_OFFLINE_S, 2))
 
 local onlineStatusString = "|cffFFFFFF[|r|cffFF0000%s|r|cffFFFFFF]|r"
 local onlineStatus = {
@@ -141,7 +140,7 @@ local function OnClick(_, btn)
 			info = dataTable[i]
 
 			if info[7] and info[1] ~= E.myname then
-				classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[9]]
+				classc = E.media.herocolor
 				levelc = GetQuestDifficultyColor(info[3])
 
 				if UnitInParty(info[1]) or UnitInRaid(info[1]) then
@@ -223,7 +222,7 @@ local function OnEnter(self, _, noUpdate)
 			zonec = inactivezone
 		end
 
-		classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[9]]
+		classc = E.media.herocolor
 
 		if shiftKeyDown then
 			DT.tooltip:AddDoubleLine(

@@ -169,7 +169,17 @@ Lib.Filters.quality = {
 	end,
 }
 
-for i = 0, #ITEM_QUALITY_COLORS do
+--[[
+	0 Poor 9d9d9d
+	1 Common ffffff
+	2 Uncommon 1eff00
+	3 Rare 0070dd
+	4 Epic a335ee
+	5 Legendary ff8000
+	6 Artifact e6cc80
+	7 Heirloom 00ccff
+]]
+for i = 0, 7 do -- Ascension change: was `#ITEM_QUALITY_COLORS` now `7`
 	Lib.Filters.quality.keywords[i] = _G["ITEM_QUALITY" .. i .. "_DESC"]:lower()
 end
 

@@ -25,9 +25,7 @@ function UF:Construct_PetFrame(frame)
 	frame.HealCommBar = self:Construct_HealComm(frame)
 	frame.AuraWatch = self:Construct_AuraWatch(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
-	if E.myclass == "HUNTER" then
-		frame.HappinessIndicator = self:Construct_Happiness(frame)
-	end
+	frame.HappinessIndicator = self:Construct_Happiness(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
@@ -117,9 +115,7 @@ function UF:Update_PetFrame(frame, db)
 	--AuraBars
 	UF:Configure_AuraBars(frame)
 
-	if E.myclass == "HUNTER" then
-		UF:Configure_Happiness(frame)
-	end
+	UF:Configure_Happiness(frame)
 
 	--CustomTexts
 	UF:Configure_CustomTexts(frame)

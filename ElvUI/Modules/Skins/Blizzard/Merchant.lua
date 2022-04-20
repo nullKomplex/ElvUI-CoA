@@ -4,7 +4,6 @@ local S = E:GetModule("Skins")
 --Lua functions
 local _G = _G
 local unpack = unpack
-local floor = math.floor
 --WoW API / Variables
 local GetBuybackItemInfo = GetBuybackItemInfo
 local GetItemInfo = GetItemInfo
@@ -144,7 +143,7 @@ S:AddCallback("Skin_Merchant", function()
 
 	hooksecurefunc(MerchantRepairAllButton, "Show", function(self)
 		-- CanMerchantRepair && CanGuildBankRepair
-		if floor(self:GetWidth() + 0.5) == 32 then
+		if self:GetWidth() == 32 then
 			MerchantRepairText:SetPoint("CENTER", MerchantFrame, "BOTTOMLEFT", 94, 151)
 			MerchantRepairAllButton:Point("BOTTOMRIGHT", MerchantFrame, "BOTTOMLEFT", 111, 105)
 		else

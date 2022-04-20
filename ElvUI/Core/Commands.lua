@@ -8,14 +8,13 @@ local format, lower, match, split = string.format, string.lower, string.match, s
 --WoW API / Variables
 local InCombatLockdown = InCombatLockdown
 local UIFrameFadeOut, UIFrameFadeIn = UIFrameFadeOut, UIFrameFadeIn
-local EnableAddOn, DisableAddOn = EnableAddOn, DisableAddOn
+local EnableAddOn, DisableAllAddOns = EnableAddOn, DisableAllAddOns
 local SetCVar = SetCVar
 local ReloadUI = ReloadUI
 local debugprofilestop = debugprofilestop
 local UpdateAddOnCPUUsage, GetAddOnCPUUsage = UpdateAddOnCPUUsage, GetAddOnCPUUsage
 local ResetCPUUsage = ResetCPUUsage
 local GetAddOnInfo = GetAddOnInfo
-local GetNumAddOns = GetNumAddOns
 local GetCVarBool = GetCVarBool
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 
@@ -33,38 +32,15 @@ end
 
 function E:LuaError(msg)
 	msg = lower(msg)
-	if msg == "on" or msg == "1" then
-		local disabledList = {}
-
-		for i = 1, GetNumAddOns() do
-			local name, _, _, enabled = GetAddOnInfo(i)
-			if enabled and name ~= "ElvUI" and name ~= "ElvUI_OptionsUI" then
-				disabledList[#disabledList + 1] = name
-				DisableAddOn(name)
-			end
-		end
-
-		if #disabledList > 0 then
-			ElvCharacterDB.LuaErrorDisabledAddOns = disabledList
-		end
-
+	if msg == "on" then
+		DisableAllAddOns()
+		EnableAddOn("ElvUI")
+		EnableAddOn("ElvUI_OptionsUI")
 		SetCVar("scriptErrors", 1)
 		ReloadUI()
-	elseif msg == "off" or msg == "0" then
-		if msg == "off" then
-			SetCVar("scriptErrors", 0)
-		end
-
-		if ElvCharacterDB.LuaErrorDisabledAddOns then
-			for _, addonName in ipairs(ElvCharacterDB.LuaErrorDisabledAddOns) do
-				EnableAddOn(addonName)
-			end
-
-			ElvCharacterDB.LuaErrorDisabledAddOns = nil
-			ReloadUI()
-		else
-			E:Print("Lua errors off.")
-		end
+	elseif msg == "off" then
+		SetCVar("scriptErrors", 0)
+		E:Print("Lua errors off.")
 	else
 		E:Print("/luaerror on - /luaerror off")
 	end
@@ -253,6 +229,17 @@ function E:EnableBlizzardAddOns()
 	end
 end
 
+function E:ChangeRole(role)
+	local roles = {
+		["melee"]="Melee",
+		["caster"]="Caster",
+		["ranged"]="Ranged",
+		["tank"]="Tank",
+	}
+	E.Role = roles[lower(role)] or "Melee"
+	print("Role was changed to:", E.Role)
+end
+
 function E:LoadCommands()
 	self:RegisterChatCommand("in", "DelayScriptCall")
 	self:RegisterChatCommand("ec", "ToggleOptionsUI")
@@ -268,9 +255,6 @@ function E:LoadCommands()
 	-- arg1 can be "all" this will scan all registered modules!
 
 	self:RegisterChatCommand("bgstats", "BGStats")
-	self:RegisterChatCommand("hellokitty", "HelloKittyToggle")
-	self:RegisterChatCommand("hellokittyfix", "HelloKittyFix")
-	self:RegisterChatCommand("harlemshake", "HarlemShakeToggle")
 	self:RegisterChatCommand("luaerror", "LuaError")
 	self:RegisterChatCommand("egrid", "Grid")
 	self:RegisterChatCommand("moveui", "ToggleMoveMode")
@@ -280,7 +264,12 @@ function E:LoadCommands()
 	self:RegisterChatCommand("farmmode", "FarmMode")
 	self:RegisterChatCommand("cleanguild", "MassGuildKick")
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
-	-- self:RegisterChatCommand("aprilfools", "") --Don't need this until next april fools
+
+	self:RegisterChatCommand("role", "ChangeRole")
+	-- This command is added for Ascension. Role checks will be unreliable, but
+	-- this will allow one to set Role manually.
+	-- /role expects one of "melee", "caster", "ranged", "tank"
+	-- and defaults to "melee" if no role is provided.
 
 	if E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", AB.ActivateBindMode)

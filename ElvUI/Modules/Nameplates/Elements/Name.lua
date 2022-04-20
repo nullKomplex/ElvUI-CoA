@@ -10,7 +10,6 @@ local match = string.match
 local utf8lower = string.utf8lower
 local utf8sub = string.utf8sub
 --WoW API / Variables
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local UNKNOWN = UNKNOWN
 
 local function abbrev(name)
@@ -40,12 +39,11 @@ function NP:Update_Name(frame, triggered)
 		name:ClearAllPoints()
 		if self.db.units[frame.UnitType].health.enable or (self.db.alwaysShowTargetHealth and frame.isTarget) then
 			name:SetJustifyH("LEFT")
-			name:SetPoint(E.InversePoints[self.db.units[frame.UnitType].name.position], self.db.units[frame.UnitType].name.parent == "Nameplate" and frame or frame[self.db.units[frame.UnitType].name.parent], self.db.units[frame.UnitType].name.position, self.db.units[frame.UnitType].name.xOffset, self.db.units[frame.UnitType].name.yOffset)
-			name:SetParent(frame.Health)
+			name:SetPoint("BOTTOMLEFT", frame.Health, "TOPLEFT", 0, E.Border*2)
+			name:SetPoint("BOTTOMRIGHT", frame.Level, "BOTTOMLEFT")
 		else
 			name:SetJustifyH("CENTER")
 			name:SetPoint("TOP", frame)
-			name:SetParent(frame)
 		end
 	end
 
@@ -54,7 +52,7 @@ function NP:Update_Name(frame, triggered)
 
 	local classColor, useClassColor
 	if class then
-		classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+		classColor = E.media.herocolor
 		useClassColor = self.db.units[frame.UnitType].name and self.db.units[frame.UnitType].name.useClassColor
 	end
 

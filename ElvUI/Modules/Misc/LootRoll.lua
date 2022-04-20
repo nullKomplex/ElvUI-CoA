@@ -21,7 +21,6 @@ local SetDesaturation = SetDesaturation
 local UnitClass = UnitClass
 
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local ROLL_DISENCHANT = ROLL_DISENCHANT
 
 local POSITION = "TOP"
@@ -142,7 +141,7 @@ local function buttonOnEnter(self)
 
 	for playerName, rollData in pairs(self.parent.rollResults) do
 		if self.rollType == rollData[1] and rollData[2] then
-			local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[rollData[2]] or RAID_CLASS_COLORS[rollData[2]]
+			local classColor = E.media.herocolor
 			GameTooltip:AddLine(playerName, classColor.r, classColor.g, classColor.b)
 		end
 	end
@@ -203,7 +202,7 @@ function M:CreateRollButton(parent, rollType)
 	button.newbieText = data.newbieText
 
 	button.text = button:CreateFontString(nil, nil)
-	button.text:FontTemplate(nil, nil, "OUTLINE")
+	button.text:FontTemplate(E.Media.Fonts.Homespun, nil, "MONOCHROMEOUTLINE")
 
 	return button
 end
@@ -321,10 +320,10 @@ function M:CreateRollFrame()
 	frame.disenchantButton:Point("LEFT", frame.greedButton, "RIGHT", 0, 1)
 	frame.passButton:Point("LEFT", frame.disenchantButton, "RIGHT", 0, 2)
 
-	frame.needButton.text:Point("CENTER", 0, 2)
-	frame.greedButton.text:Point("CENTER", 1, 3)
-	frame.disenchantButton.text:Point("CENTER", 1, 2)
-	frame.passButton.text:Point("CENTER", 1, 0)
+	frame.needButton.text:Point("CENTER", -1, 4)
+	frame.greedButton.text:Point("CENTER", 1, 5)
+	frame.disenchantButton.text:Point("CENTER", 1, 4)
+	frame.passButton.text:Point("CENTER", 1, 2)
 
 	frame.bindText = frame:CreateFontString()
 	frame.bindText:Point("LEFT", frame.passButton, "RIGHT", 2, 0)
@@ -334,6 +333,7 @@ function M:CreateRollFrame()
 	itemName:FontTemplate(nil, nil, "OUTLINE")
 	itemName:Point("LEFT", frame.bindText, "RIGHT", 1, 0)
 	itemName:Point("RIGHT", frame, "RIGHT", -5, 0)
+	itemName:Size(200, 10)
 	itemName:SetJustifyH("LEFT")
 	frame.itemName = itemName
 

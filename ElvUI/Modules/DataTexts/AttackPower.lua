@@ -25,7 +25,7 @@ local lastPanel
 local function OnEvent(self)
 	lastPanel = self
 
-	if E.myclass == "HUNTER" then
+	if E.Role == "Ranged" then
 		base, posBuff, negBuff = UnitRangedAttackPower("player")
 		apower = base + posBuff + negBuff
 	else
@@ -39,7 +39,7 @@ end
 local function OnEnter(self)
 	DT:SetupTooltip(self)
 
-	if E.myclass == "HUNTER" then
+	if E.Role == "Ranged" then
 		local petAPBonus = ComputePetBonus("PET_BONUS_RAP_TO_AP", apower)
 		local petSpellDmgBonus = ComputePetBonus("PET_BONUS_RAP_TO_SPELLDMG", apower)
 

@@ -43,7 +43,7 @@ S:AddCallback("Skin_MirrorTimers", function()
 
 		local timerText = mirrorTimer:CreateFontString(nil, "OVERLAY")
 		timerText:FontTemplate()
-		timerText:SetPoint("CENTER", statusBar)
+		timerText:Point("CENTER", statusBar)
 		mirrorTimer.TimerText = timerText
 
 		mirrorTimer.timeSinceUpdate = 0

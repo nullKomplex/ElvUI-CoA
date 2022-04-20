@@ -367,8 +367,15 @@ E.Options.args.general = {
 							desc = L["Color some texts use."],
 							hasAlpha = false,
 						},
-						cropIcon = {
+						herocolor = {
 							order = 5,
+							type = "color",
+							name = "Class Color",
+							desc = "Color of class colored elements.",
+							hasAlpha = false,
+						},
+						cropIcon = {
+							order = 6,
 							type = "toggle",
 							tristate = true,
 							name = L["Crop Icons"],
@@ -394,7 +401,7 @@ E.Options.args.general = {
 			name = L["Class Totems"],
 			get = function(info) return E.db.general.totems[info[#info]] end,
 			set = function(info, value) E.db.general.totems[info[#info]] = value Totems:PositionAndSize() end,
-			hidden = function() return E.myclass ~= "SHAMAN" end,
+			hidden = function() return false end,
 			args = {
 				header = {
 					order = 1,

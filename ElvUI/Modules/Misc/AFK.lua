@@ -32,7 +32,6 @@ local UnitIsAFK = UnitIsAFK
 local AFK, DND = AFK, DND
 local CHAT_BN_CONVERSATION_GET_LINK = CHAT_BN_CONVERSATION_GET_LINK
 local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local cameraSpeed = 0.035
 
@@ -277,7 +276,7 @@ function mod:Initialize()
 
 	self.AFKMode.chat = CreateFrame("ScrollingMessageFrame", "AFKChat", self.AFKMode)
 	self.AFKMode.chat:Size(500, 200)
-	self.AFKMode.chat:Point("TOPLEFT", 4, -3)
+	self.AFKMode.chat:Point("TOPLEFT", self.AFKMode, "TOPLEFT", 4, -3)
 	self.AFKMode.chat:FontTemplate()
 	self.AFKMode.chat:SetJustifyH("LEFT")
 	self.AFKMode.chat:SetMaxLines(500)
@@ -296,7 +295,7 @@ function mod:Initialize()
 	self.AFKMode.bottom = CreateFrame("Frame", nil, self.AFKMode)
 	self.AFKMode.bottom:SetFrameLevel(0)
 	self.AFKMode.bottom:SetTemplate("Transparent")
-	self.AFKMode.bottom:Point("BOTTOM", 0, -E.Border)
+	self.AFKMode.bottom:Point("BOTTOM", self.AFKMode, "BOTTOM", 0, -E.Border)
 	self.AFKMode.bottom:Width(GetScreenWidth() + (E.Border*2))
 	self.AFKMode.bottom:Height(GetScreenHeight() * 0.1)
 
@@ -306,11 +305,11 @@ function mod:Initialize()
 	self.AFKMode.bottom.logo:SetTexture(E.Media.Textures.Logo)
 
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY")
-	self.AFKMode.bottom.faction:Point("BOTTOMLEFT", -20, -16)
+	self.AFKMode.bottom.faction:Point("BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16)
 	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..E.myfaction.."-Logo")
 	self.AFKMode.bottom.faction:Size(140)
 
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]
+	local classColor = E.media.herocolor
 	self.AFKMode.bottom.name = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY")
 	self.AFKMode.bottom.name:FontTemplate(nil, 20)
 	self.AFKMode.bottom.name:SetFormattedText("%s - %s", E.myname, E.myrealm)
@@ -330,7 +329,7 @@ function mod:Initialize()
 	self.AFKMode.bottom.time:SetTextColor(0.7, 0.7, 0.7)
 
 	self.AFKMode.bottom.model = CreateFrame("PlayerModel", "ElvUIAFKPlayerModel", self.AFKMode.bottom)
-	self.AFKMode.bottom.model:Point("BOTTOMRIGHT", 120, -100)
+	self.AFKMode.bottom.model:Point("BOTTOMRIGHT", self.AFKMode.bottom, "BOTTOMRIGHT", 120, -100)
 	self.AFKMode.bottom.model:Size(800)
 	self.AFKMode.bottom.model:SetFacing(6)
 	self.AFKMode.bottom.model:SetUnit("player")

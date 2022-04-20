@@ -83,7 +83,7 @@ local function UpdateColorTexts(r, g, b, box)
 	-- we want those /255 values
 	r, g, b = r*255, g*255, b*255
 
-	ColorPPBoxH:SetText(format("%.2x%.2x%.2x", r, g, b))
+	ColorPPBoxH:SetText(string.format("%.2x%.2x%.2x", r, g, b))
 	ColorPPBoxR:SetText(r)
 	ColorPPBoxG:SetText(g)
 	ColorPPBoxB:SetText(b)
@@ -245,7 +245,7 @@ function B:EnhanceColorPicker()
 	b:Point("TOP", ColorPPCopy, "BOTTOMRIGHT", 0, -7)
 
 	b:SetScript("OnClick", function()
-		local color = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
+		local color = E.media.herocolor
 		ColorPickerFrame:SetColorRGB(color.r, color.g, color.b)
 		ColorSwatch:SetTexture(color.r, color.g, color.b)
 		if ColorPickerFrame.hasOpacity then

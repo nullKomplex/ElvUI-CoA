@@ -372,10 +372,6 @@ function AB:ReassignBindings(event)
 	if event == "UPDATE_BINDINGS" then
 		self:UpdatePetBindings()
 		self:UpdateStanceBindings()
-
-		if E.myclass == "SHAMAN" then
-			self:UpdateTotemBindings()
-		end
 	end
 
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
@@ -479,10 +475,6 @@ function AB:UpdateButtonSettings()
 
 	self:UpdatePetBindings()
 	self:UpdateStanceBindings()
-
-	if E.myclass == "SHAMAN" then
-		self:UpdateTotemBindings()
-	end
 
 	for barName, bar in pairs(self.handledBars) do
 		if bar then
@@ -717,11 +709,6 @@ function AB:DisableBlizzard()
 		_G["BonusActionButton"..i]:UnregisterAllEvents()
 		_G["BonusActionButton"..i]:SetAttribute("statehidden", true)
 
-		if E.myclass ~= "SHAMAN" then
-			_G["MultiCastActionButton"..i]:Hide()
-			_G["MultiCastActionButton"..i]:UnregisterAllEvents()
-			_G["MultiCastActionButton"..i]:SetAttribute("statehidden", true)
-		end
 	end
 
 	MultiCastActionBarFrame.ignoreFramePositionManager = true
@@ -762,12 +749,6 @@ function AB:DisableBlizzard()
 	VehicleMenuBar:UnregisterAllEvents()
 	VehicleMenuBar:Hide()
 	VehicleMenuBar:SetParent(UIHider)
-
-	if E.myclass ~= "SHAMAN" then
-		MultiCastActionBarFrame:UnregisterAllEvents()
-		MultiCastActionBarFrame:Hide()
-		MultiCastActionBarFrame:SetParent(UIHider)
-	end
 
 	InterfaceOptionsActionBarsPanelAlwaysShowActionBars:EnableMouse(false)
 	InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetAlpha(0)
@@ -992,7 +973,7 @@ function AB:Initialize()
 	self:CreateBarShapeShift()
 	self:CreateVehicleLeave()
 
-	if E.myclass == "SHAMAN" and self.db.barTotem.enabled then
+	if self.db.barTotem.enabled then
 		self:CreateTotemBar()
 	end
 

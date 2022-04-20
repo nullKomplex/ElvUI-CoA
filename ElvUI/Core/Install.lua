@@ -29,7 +29,6 @@ local CLASS, CONTINUE, PREVIOUS = CLASS, CONTINUE, PREVIOUS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
 local GUILD_EVENT_LOG = GUILD_EVENT_LOG
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local CURRENT_PAGE = 0
 local MAX_PAGE = 8
@@ -163,7 +162,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.castColor = E:GetColor(0.31, 0.31, 0.31)
 		E.db.unitframe.colors.castClassColor = false
 	elseif theme == "class" then
-		classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
+		classColor = E.media.herocolor
 
 		E.db.general.bordercolor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(0.31, 0.31, 0.31))
 		E.db.general.backdropcolor = E:GetColor(0.1, 0.1, 0.1)
@@ -270,9 +269,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 		E.db.movers.ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,4"
 		E.db.movers.ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,138"
 		E.db.movers.ElvAB_5 = "BOTTOM,ElvUIParent,BOTTOM,-92,57"
-		if E.myclass == "SHAMAN" then
-			E.db.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
-		end
+		E.db.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
 		E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,342,59"
 		E.db.movers.ElvUF_PartyMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,4,248"
 		E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-341,99"

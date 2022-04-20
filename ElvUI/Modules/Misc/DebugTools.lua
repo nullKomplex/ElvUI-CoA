@@ -14,6 +14,11 @@ function D:ModifyErrorFrame()
 
 	local Orig_ScriptErrorsFrame_Update = ScriptErrorsFrame_Update
 	ScriptErrorsFrame_Update = function(...)
+		if GetCVarBool("scriptErrors") ~= 1 then
+			Orig_ScriptErrorsFrame_Update(...)
+			return
+		end
+
 		-- Sometimes the locals table does not have an entry for an index, which can cause an argument #6 error
 		-- in Blizzard_DebugTools.lua:430 and then cause a C stack overflow, this will prevent that
 		local index = ScriptErrorsFrame.index
@@ -27,10 +32,8 @@ function D:ModifyErrorFrame()
 
 		Orig_ScriptErrorsFrame_Update(...)
 
-		if GetCVarBool("scriptErrors") == 1 then
-			-- Stop text highlighting again
-			ScriptErrorsFrameScrollFrameText:HighlightText(0, 0)
-		end
+		-- Stop text highlighting again
+		ScriptErrorsFrameScrollFrameText:HighlightText(0, 0)
 	end
 
 	-- Unhighlight text when focus is hit
@@ -39,9 +42,9 @@ function D:ModifyErrorFrame()
 	end)
 
 	ScriptErrorsFrame:Size(500, 300)
-	ScriptErrorsFrameScrollFrame:Size(455, 229)
+	ScriptErrorsFrameScrollFrame:Size(ScriptErrorsFrame:GetWidth() - 45, ScriptErrorsFrame:GetHeight() - 71)
 
-	ScriptErrorsFrameScrollFrameText:Width(455)
+	ScriptErrorsFrameScrollFrameText:Width(ScriptErrorsFrameScrollFrame:GetWidth())
 
 	local BUTTON_WIDTH = 75
 	local BUTTON_HEIGHT = 24

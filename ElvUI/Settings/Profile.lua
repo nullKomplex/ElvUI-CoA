@@ -30,6 +30,7 @@ P.general = {
 	backdropcolor = {r = 0.1, g = 0.1, b = 0.1},
 	backdropfadecolor = {r = 0.06, g = 0.06, b = 0.06, a = 0.8},
 	valuecolor = {r = 0.99, g = 0.48, b = 0.17},
+	herocolor = {r = 0.0, g = 1.0, b = 0.0},
 	cropIcon = 2,
 	minimap = {
 		size = 176,
@@ -121,29 +122,7 @@ P.databars = {
 		orientation = "VERTICAL",
 		hideAtMaxLevel = true,
 		hideInVehicle = false,
-		hideInCombat = false,
-		showBubbles = false,
-		questXP = {
-			color = {r = 0, g = 1, b = 0, a = 0.4},
-			tooltip = true,
-			questCurrentZoneOnly = false,
-			questCompletedOnly = false
-		}
-	},
-	petExperience = {
-		enable = true,
-		width = 10,
-		height = 180,
-		textFormat = "NONE",
-		textSize = 11,
-		font = "PT Sans Narrow",
-		fontOutline = "NONE",
-		mouseover = false,
-		orientation = "VERTICAL",
-		hideAtMaxLevel = true,
-		hideInVehicle = false,
-		hideInCombat = false,
-		showBubbles = false
+		hideInCombat = false
 	},
 	reputation = {
 		enable = false,
@@ -156,8 +135,7 @@ P.databars = {
 		mouseover = false,
 		orientation = "VERTICAL",
 		hideInVehicle = false,
-		hideInCombat = false,
-		showBubbles = false
+		hideInCombat = false
 	}
 }
 
@@ -386,10 +364,6 @@ P.nameplates = {
 		TARGET = {
 			enable = true,
 			glowStyle = "style4",
-			arrow = "ArrowUp",
-			arrowSize = 20,
-			arrowXOffset = 3,
-			arrowYOffset = 0,
 			comboPoints = {
 				enable = true,
 				width = 8,
@@ -422,20 +396,12 @@ P.nameplates = {
 				enable = true,
 				useClassColor = true,
 				abbrev = false,
-				position = "TOPLEFT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
 			},
 			level = {
 				enable = false,
-				position = "TOPRIGHT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -557,20 +523,12 @@ P.nameplates = {
 				enable = true,
 				useClassColor = true,
 				abbrev = false,
-				position = "TOPLEFT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
 			},
 			level = {
 				enable = true,
-				position = "TOPRIGHT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -698,20 +656,12 @@ P.nameplates = {
 			name = {
 				enable = true,
 				abbrev = false,
-				position = "TOPLEFT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
 			},
 			level = {
 				enable = true,
-				position = "TOPRIGHT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -846,20 +796,12 @@ P.nameplates = {
 			name = {
 				enable = true,
 				abbrev = false,
-				position = "TOPLEFT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
 			},
 			level = {
 				enable = true,
-				position = "TOPRIGHT",
-				parent = "Health",
-				xOffset = 0,
-				yOffset = 2,
 				font = "PT Sans Narrow",
 				fontOutline = "OUTLINE",
 				fontSize = 11
@@ -1300,7 +1242,6 @@ P.unitframe = {
 		invertClasspower = false,
 		castColor = {r = 0.31, g = 0.31, b = 0.31},
 		castNoInterrupt = {r = 0.78, g = 0.25, b = 0.25},
-		castInterruptedColor = {r = 0.30, g = 0.30, b = 0.30},
 		castClassColor = false,
 		castReactionColor = false,
 		health = {r = 0.31, g = 0.31, b = 0.31},
@@ -1420,6 +1361,48 @@ P.unitframe = {
 			power = {
 				enable = true,
 				text_format = "[powercolor][power:current]",
+				width = "fill",
+				height = 10,
+				offset = 0,
+				position = "RIGHT",
+				hideonnpc = false,
+				xOffset = -2,
+				yOffset = 0,
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
+			},
+			energy = {
+				enable = true,
+				text_format = "[energycolor][energy:current]",
+				width = "fill",
+				height = 10,
+				offset = 0,
+				position = "RIGHT",
+				hideonnpc = false,
+				xOffset = -2,
+				yOffset = 0,
+				attachTextTo = "Health",
+				detachFromFrame = false,
+				detachedWidth = 250,
+				strataAndLevel = {
+					useCustomStrata = false,
+					frameStrata = "LOW",
+					useCustomLevel = false,
+					frameLevel = 1
+				},
+				parent = "FRAME"
+			},
+			rage = {
+				enable = true,
+				text_format = "[ragecolor][rage:current]",
 				width = "fill",
 				height = 10,
 				offset = 0,
@@ -3384,18 +3367,6 @@ P.unitframe = {
 					color = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
-			roleIcon = {
-				enable = false,
-				position = "TOPRIGHT",
-				attachTo = "Health",
-				xOffset = 0,
-				yOffset = 0,
-				size = 15,
-				tank = true,
-				healer = true,
-				damager = true,
-				combatHide = false
-			},
 			raidRoleIcons = {
 				enable = true,
 				position = "TOPLEFT"
@@ -4220,9 +4191,6 @@ P.actionbar = {
 		showGrid = true,
 		paging = {
 			DRUID = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;",
-			WARRIOR = "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9;",
-			PRIEST = "[bonusbar:1] 7;",
-			ROGUE = "[bonusbar:1] 7; [form:3] 7;"
 		},
 		visibility = ""
 	},

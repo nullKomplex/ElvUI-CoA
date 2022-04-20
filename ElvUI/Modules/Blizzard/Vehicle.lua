@@ -10,7 +10,7 @@ local GetVehicleUIIndicatorSeat = GetVehicleUIIndicatorSeat
 local function VehicleSeatIndicator_SetPosition(self, _, point)
 	if point ~= VehicleSeatMover then
 		self:ClearAllPoints()
-		self:SetPoint("TOPLEFT", VehicleSeatMover, "TOPLEFT", 0, 0)
+		self:Point("TOPLEFT", VehicleSeatMover, "TOPLEFT", 0, 0)
 	end
 end
 

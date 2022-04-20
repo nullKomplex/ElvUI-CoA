@@ -31,7 +31,7 @@ local dateDisplayFormat = ""
 local lockoutInfoFormat = "%s%s %s |cffaaaaaa(%s)"
 local lockoutColorExtended, lockoutColorNormal = {r = 0.3, g = 1, b = 0.3}, {r = .8, g = .8, b = .8}
 local lockedInstances = {raids = {}, dungeons = {}}
-local timeFormat, showAMPM, showSecs
+local timeFormat, realmDiffSeconds, showAMPM, showSecs
 local enteredFrame, fullUpdate
 local instanceIconByName
 local numSavedInstances = 0
@@ -45,39 +45,15 @@ local difficultyTag = { -- Normal, Normal, Heroic, Heroic
 	(krcntw and PLAYER_DIFFICULTY2) or utf8sub(PLAYER_DIFFICULTY2, 1, 1), -- H
 }
 
-local function getTimeDiffSeconds(srvHours, srvMinutes, seconds)
-	local timeUTC = date("!*t")
-	local timeLocal = date("*t")
+local function getRealmTimeDiff()
+	local hours, minutes = GetGameTime()
+	local localTime = date("*t")
 
-	local tzDiffHours = (timeLocal.hour - timeUTC.hour)
-	local tzDiffMinutes = (timeLocal.min - timeUTC.min)
-	local tzDiffTotalSeconds = tzDiffHours * 3600 + tzDiffMinutes * 60
+	local diffHours = localTime.hour - hours
+	local diffMinutes = localTime.min - minutes
 
-	local srvOffsetHours = srvHours - timeUTC.hour
-	local srvOffsetMinutes = srvMinutes - timeUTC.min
-	local srvOffsetSeconds = seconds and (timeUTC.sec - seconds) or 0
-
-	local srvDiffSecondsUTC = (srvOffsetHours * 3600) + (srvOffsetMinutes * 60) - srvOffsetSeconds
-
-	return srvDiffSecondsUTC - tzDiffTotalSeconds
+	return (diffHours * 60 + diffMinutes) * 60
 end
-
-local srvHours, srvMinutes = GetGameTime()
-local srvDiffSeconds = getTimeDiffSeconds(srvHours, srvMinutes)
-
-local function GetServerTime()
-	return time() + srvDiffSeconds
-end
-
-local frame = CreateFrame("Frame")
-frame:SetScript("OnUpdate", function(self)
-	local h, m = GetGameTime()
-
-	if m ~= srvMinutes then
-		self:Hide()
-		srvDiffSeconds = getTimeDiffSeconds(h, m, 0)
-	end
-end)
 
 local function GetCurrentDate(formatString, forceLocalTime, forceRealmTime)
 	if timeFormat ~= E.db.datatexts.timeFormat then
@@ -93,8 +69,8 @@ local function GetCurrentDate(formatString, forceLocalTime, forceRealmTime)
 		formatString = gsub(formatString, "([^%%])%%p", "%1"..localizedAMPM)
 	end
 
-	if srvDiffSeconds ~= 0 and (E.db.datatexts.realmTime or forceRealmTime) and not forceLocalTime then
-		return date(formatString, GetServerTime())
+	if realmDiffSeconds ~= 0 and (E.db.datatexts.realmTime or forceRealmTime) and not forceLocalTime then
+		return date(formatString, time() - realmDiffSeconds)
 	else
 		return date(formatString)
 	end
@@ -126,6 +102,14 @@ local function OnEvent(self, event)
 		end
 
 		return
+	end
+
+	if not realmDiffSeconds then
+		realmDiffSeconds = getRealmTimeDiff()
+
+		if realmDiffSeconds < 900 then
+			realmDiffSeconds = 0
+		end
 	end
 end
 

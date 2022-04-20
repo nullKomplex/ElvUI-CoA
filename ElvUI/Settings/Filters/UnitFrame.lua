@@ -487,7 +487,7 @@ E.ReverseTimer = {
 }
 
 -- BuffWatch: List of personal spells to show on unitframes as icon
-local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style, displayText, decimalThreshold, textColor, textThreshold, xOffset, yOffset, sizeOverride)
+local function ClassBuff(id, point, xOffset, yOffset, color, anyUnit, onlyShowMissing, style, displayText, decimalThreshold, textColor, textThreshold, sizeOverride)
 	local r, g, b = unpack(color)
 
 	local r2, g2, b2 = 1, 1, 1
@@ -513,53 +513,41 @@ local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style, disp
 	}
 end
 
+local OFFSET_X, OFFSET_Y = 12, 12 -- Highly recommend textured indicators.
 G.unitframe.buffwatch = {
-	PRIEST = {
-		[6788] = ClassBuff(6788, "TOPLEFT", {1, 0, 0}, true),				-- Weakened Soul
-		[10060] = ClassBuff(10060, "RIGHT", {0.89, 0.09, 0.05}),			-- Power Infusion
-		[48066] = ClassBuff(48066, "BOTTOMRIGHT", {0.81, 0.85, 0.1}, true), -- Power Word: Shield
-		[48068] = ClassBuff(48068, "BOTTOMLEFT", {0.4, 0.7, 0.2}),			-- Renew
-		[48111] = ClassBuff(48111, "TOPRIGHT", {0.2, 0.7, 0.2}),			-- Prayer of Mending
-	},
 	DRUID = {
-		[48441] = ClassBuff(48441, "TOPRIGHT", {0.8, 0.4, 0.8}),			-- Rejuvenation
-		[48443] = ClassBuff(48443, "BOTTOMLEFT", {0.2, 0.8, 0.2}),			-- Regrowth
-		[48451] = ClassBuff(48451, "TOPLEFT", {0.4, 0.8, 0.2}),				-- Lifebloom
-		[53251] = ClassBuff(53251, "BOTTOMRIGHT", {0.8, 0.4, 0}),			-- Wild Growth
-	},
-	PALADIN = {
-		[1038] = ClassBuff(1038, "BOTTOMRIGHT", {0.9, 0.78, 0}, true),		-- Hand of Salvation
-		[1044] = ClassBuff(1044, "BOTTOMRIGHT", {0.86, 0.45, 0}, true),		-- Hand of Freedom
-		[6940] = ClassBuff(6940, "BOTTOMRIGHT", {0.89, 0.09, 0.05}, true),	-- Hand of Sacrifice
-		[10278] = ClassBuff(10278, "BOTTOMRIGHT", {0.2, 0.2, 1}, true),		-- Hand of Protection
-		[53563] = ClassBuff(53563, "TOPLEFT", {0.7, 0.3, 0.7}),				-- Beacon of Light
-		[53601] = ClassBuff(53601, "TOPRIGHT", {0.4, 0.7, 0.2}),			-- Sacred Shield
-	},
-	SHAMAN = {
-		[16237] = ClassBuff(16237, "BOTTOMLEFT", {0.4, 0.7, 0.2}),			-- Ancestral Fortitude
-		[49284] = ClassBuff(49284, "TOPRIGHT", {0.2, 0.7, 0.2}),			-- Earth Shield
-		[52000] = ClassBuff(52000, "BOTTOMRIGHT", {0.7, 0.4, 0}),			-- Earthliving
-		[61301] = ClassBuff(61301, "TOPLEFT", {0.7, 0.3, 0.7}),				-- Riptide
-	},
-	ROGUE = {
-		[57933] = ClassBuff(57933, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Tricks of the Trade
-	},
-	MAGE = {
-		[54646] = ClassBuff(54646, "TOPRIGHT", {0.2, 0.2, 1}),				-- Focus Magic
-	},
-	WARRIOR = {
-		[3411] = ClassBuff(3411, "TOPRIGHT", {0.89, 0.09, 0.05}),			-- Intervene
-		[59665] = ClassBuff(59665, "TOPLEFT", {0.2, 0.2, 1}),				-- Vigilance
-	},
-	DEATHKNIGHT = {
-		[49016] = ClassBuff(49016, "TOPRIGHT", {0.89, 0.09, 0.05})			-- Hysteria
+		[6788] = ClassBuff(6788, "TOPLEFT", 0, 0, {1, 0, 0}, true),							-- Weakened Soul
+		[10060] = ClassBuff(10060, "RIGHT", 0, 0, {0.89, 0.09, 0.05}),						-- Power Infusion
+		[48066] = ClassBuff(48066, "BOTTOMRIGHT", 0, 0, {0.81, 0.85, 0.1}, true),			-- Power Word: Shield
+		[48068] = ClassBuff(48068, "BOTTOMLEFT", 0, 0, {0.4, 0.7, 0.2}),					-- Renew
+		[48111] = ClassBuff(48111, "TOPRIGHT", 0, 0, {0.2, 0.7, 0.2}),						-- Prayer of Mending
+		[48441] = ClassBuff(48441, "TOPRIGHT", -OFFSET_X, 0, {0.8, 0.4, 0.8}),				-- Rejuvenation
+		[48443] = ClassBuff(48443, "BOTTOMLEFT", OFFSET_X, 0, {0.2, 0.8, 0.2}),				-- Regrowth
+		[48451] = ClassBuff(48451, "TOPLEFT", OFFSET_X, 0, {0.4, 0.8, 0.2}),				-- Lifebloom
+		[53251] = ClassBuff(53251, "BOTTOMRIGHT", -OFFSET_X, 0, {0.8, 0.4, 0}),				-- Wild Growth
+
+		-- All hand-buffs have same default location.
+		[1038] = ClassBuff(1038, "BOTTOMRIGHT", 0, OFFSET_Y, {0.9, 0.78, 0}, true),			-- Hand of Salvation
+		[1044] = ClassBuff(1044, "BOTTOMRIGHT", 0, OFFSET_Y, {0.86, 0.45, 0}, true),		-- Hand of Freedom
+		[6940] = ClassBuff(6940, "BOTTOMRIGHT", 0, OFFSET_Y, {0.89, 0.09, 0.05}, true),		-- Hand of Sacrifice
+		[10278] = ClassBuff(10278, "BOTTOMRIGHT", 0, OFFSET_Y, {0.2, 0.2, 1}, true),		-- Hand of Protection
+
+		[53563] = ClassBuff(53563, "TOPLEFT", 0, -OFFSET_Y, {0.7, 0.3, 0.7}),				-- Beacon of Light
+		[53601] = ClassBuff(53601, "TOPRIGHT", 0, -OFFSET_Y, {0.4, 0.7, 0.2}),				-- Sacred Shield
+		[16237] = ClassBuff(16237, "BOTTOMLEFT", 0, OFFSET_Y, {0.4, 0.7, 0.2}),				-- Ancestral Fortitude
+		[49284] = ClassBuff(49284, "TOPRIGHT", 0, -OFFSET_Y, {0.2, 0.7, 0.2}),				-- Earth Shield
+		[52000] = ClassBuff(52000, "BOTTOMRIGHT", 0, OFFSET_Y, {0.7, 0.4, 0}),				-- Earthliving
+		[61301] = ClassBuff(61301, "TOPLEFT", OFFSET_X, -OFFSET_Y, {0.7, 0.3, 0.7}),		-- Riptide
+		[57933] = ClassBuff(57933, "TOPRIGHT", -OFFSET_X, -OFFSET_Y, {0.89, 0.09, 0.05}),	-- Tricks of the Trade
+		[54646] = ClassBuff(54646, "TOPRIGHT", 0, -2 * OFFSET_Y, {0.2, 0.2, 1}),			-- Focus Magic
+		[3411] = ClassBuff(3411, "TOPRIGHT", -OFFSET_X, -2 * OFFSET_Y, {0.89, 0.09, 0.05}),	-- Intervene
+		[59665] = ClassBuff(59665, "TOPLEFT", 2 * OFFSET_X, 0, {0.2, 0.2, 1}),				-- Vigilance
+		[49016] = ClassBuff(49016, "TOPRIGHT", 0, -3 * OFFSET_Y, {0.89, 0.09, 0.05})		-- Hysteria
 	},
 	PET = {
-		[1539] = ClassBuff(1539, "TOPLEFT", {0.81, 0.85, 0.1}, true),		-- Feed Pet
-		[48990] = ClassBuff(48990, "TOPRIGHT", {0.2, 0.8, 0.2}, true)		-- Mend Pet
+		[1539] = ClassBuff(1539, "TOPLEFT", 0, 0, {0.81, 0.85, 0.1}, true),		-- Feed Pet
+		[48990] = ClassBuff(48990, "TOPRIGHT", 0, 0, {0.2, 0.8, 0.2}, true)		-- Mend Pet
 	},
-	HUNTER = {},
-	WARLOCK = {},
 }
 
 -- Profile specific BuffIndicator

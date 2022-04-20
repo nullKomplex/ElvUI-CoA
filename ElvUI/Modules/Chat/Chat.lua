@@ -60,14 +60,12 @@ local CHAT_FRAMES = CHAT_FRAMES
 local CHAT_IGNORED = CHAT_IGNORED
 local CHAT_OPTIONS = CHAT_OPTIONS
 local CHAT_RESTRICTED = CHAT_RESTRICTED
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME
 local DND = DND
 local ICON_LIST = ICON_LIST
 local ICON_TAG_LIST = ICON_TAG_LIST
 local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local RAID_WARNING = RAID_WARNING
 
 local throttle = {}
@@ -276,8 +274,8 @@ function CH:StyleChat(frame)
 	local charCount = editbox:CreateFontString()
 	charCount:FontTemplate()
 	charCount:SetTextColor(190, 190, 190, 0.4)
-	charCount:Point("TOPRIGHT", -5, 0)
-	charCount:Point("BOTTOMRIGHT", -5, 0)
+	charCount:Point("TOPRIGHT", editbox, "TOPRIGHT", -5, 0)
+	charCount:Point("BOTTOMRIGHT", editbox, "BOTTOMRIGHT", -5, 0)
 	charCount:SetJustifyH("CENTER")
 	charCount:Width(40)
 	editbox.characterCount = charCount
@@ -941,7 +939,7 @@ function CH:GetColoredName(event, _, arg2, _, _, _, _, _, arg8, _, _, _, arg12)
 		local _, englishClass = GetPlayerInfoByGUID(arg12)
 
 		if englishClass then
-			local classColorTable = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[englishClass] or RAID_CLASS_COLORS[englishClass]
+			local classColorTable = E.media.herocolor
 			if not classColorTable then
 				return arg2
 			end
@@ -1441,7 +1439,7 @@ function CH:CheckKeyword(message, author)
 				local wordMatch = classMatch and lowerCaseWord
 
 				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
-					local classColorTable = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classMatch] or RAID_CLASS_COLORS[classMatch]
+					local classColorTable = E.media.herocolor
 					word = gsub(word, gsub(tempWord, "%-", "%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
 				end
 			end
@@ -1800,7 +1798,7 @@ function CH:BuildCopyChatFrame()
 	frame:Hide()
 	frame:SetTemplate("Transparent")
 	frame:Size(700, 200)
-	frame:Point("BOTTOM", 0, 3)
+	frame:Point("BOTTOM", E.UIParent, "BOTTOM", 0, 3)
 	frame:SetFrameStrata("DIALOG")
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
@@ -1810,8 +1808,8 @@ function CH:BuildCopyChatFrame()
 	self.copyChatFrame = frame
 
 	local scrollFrame = CreateFrame("ScrollFrame", "$parentScrollFrame", frame, "UIPanelScrollFrameTemplate")
-	scrollFrame:Point("TOPLEFT", 8, -30)
-	scrollFrame:Point("BOTTOMRIGHT", -29, 8)
+	scrollFrame:Point("TOPLEFT", frame, "TOPLEFT", 8, -30)
+	scrollFrame:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -29, 8)
 	frame.scrollFrame = scrollFrame
 
 	scrollFrame.scrollBar = CopyChatFrameScrollFrameScrollBar
@@ -2024,7 +2022,7 @@ function CH:Initialize()
 
 	Skins:HandleNextPrevButton(CombatLogQuickButtonFrame_CustomAdditionalFilterButton)
 	CombatLogQuickButtonFrame_CustomAdditionalFilterButton:Size(22)
-	CombatLogQuickButtonFrame_CustomAdditionalFilterButton:Point("TOPRIGHT", 3, -1)
+	CombatLogQuickButtonFrame_CustomAdditionalFilterButton:Point("TOPRIGHT", CombatLogQuickButtonFrame_Custom, "TOPRIGHT", 3, -1)
 	CombatLogQuickButtonFrame_CustomAdditionalFilterButton:SetHitRectInsets(0, 0, 0, 0)
 end
 

@@ -26,42 +26,6 @@ local colors = {
 	threat = {},
 }
 
--- We do this because people edit the vars directly, and changing the default
--- globals makes SPICE FLOW!
-local function customClassColors()
-	if(CUSTOM_CLASS_COLORS) then
-		local function updateColors()
-			for classToken, color in next, CUSTOM_CLASS_COLORS do
-				colors.class[classToken] = {color.r, color.g, color.b}
-			end
-
-			for _, obj in next, oUF.objects do
-				obj:UpdateAllElements('CUSTOM_CLASS_COLORS')
-			end
-		end
-
-		updateColors()
-		CUSTOM_CLASS_COLORS:RegisterCallback(updateColors)
-
-		return true
-	end
-end
-
-if(not customClassColors()) then
-	for classToken, color in next, RAID_CLASS_COLORS do
-		colors.class[classToken] = {color.r, color.g, color.b}
-	end
-
-	local eventHandler = CreateFrame('Frame')
-	eventHandler:RegisterEvent('ADDON_LOADED')
-	eventHandler:SetScript('OnEvent', function(self)
-		if(customClassColors()) then
-			self:UnregisterEvent('ADDON_LOADED')
-			self:SetScript('OnEvent', nil)
-		end
-	end)
-end
-
 for debuffType, color in next, DebuffTypeColor do
 	colors.debuff[debuffType] = {color.r, color.g, color.b}
 end

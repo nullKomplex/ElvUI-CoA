@@ -9,7 +9,6 @@ local format, strmatch, gsub, strsplit = string.format, strmatch, string.gsub, s
 
 local GetScreenWidth = GetScreenWidth
 local IsAddOnLoaded = IsAddOnLoaded
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local ACD = E.Libs.AceConfigDialog
 
@@ -1006,6 +1005,422 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 			name = L["Strata and Level"],
 			get = function(info) return E.db.unitframe.units[groupName].power.strataAndLevel[info[#info]] end,
 			set = function(info, value) E.db.unitframe.units[groupName].power.strataAndLevel[info[#info]] = value updateFunc(UF, groupName, numUnits) end,
+			guiInline = true,
+			args = {
+				useCustomStrata = {
+					order = 1,
+					type = "toggle",
+					name = L["Use Custom Strata"]
+				},
+				frameStrata = {
+					order = 2,
+					type = "select",
+					name = L["Frame Strata"],
+					values = {
+						["BACKGROUND"] = "BACKGROUND",
+						["LOW"] = "LOW",
+						["MEDIUM"] = "MEDIUM",
+						["HIGH"] = "HIGH",
+						["DIALOG"] = "DIALOG",
+						["TOOLTIP"] = "TOOLTIP"
+					}
+				},
+				spacer = {
+					order = 3,
+					type = "description",
+					name = ""
+				},
+				useCustomLevel = {
+					order = 4,
+					type = "toggle",
+					name = L["Use Custom Level"]
+				},
+				frameLevel = {
+					order = 5,
+					type = "range",
+					name = L["Frame Level"],
+					min = 2, max = 128, step = 1
+				}
+			}
+		}
+	end
+
+	return config
+end
+
+local function GetOptionsTable_Energy(hasDetatchOption, updateFunc, groupName, numUnits, hasStrataLevel)
+	local config = {
+		order = 250,
+		type = "group",
+		name = L["Energy"],
+		get = function(info)
+			return E.db.unitframe.units[groupName].energy[info[#info]]
+		end,
+		set = function(info, value)
+			E.db.unitframe.units[groupName].energy[info[#info]] = value
+			updateFunc(UF, groupName, numUnits)
+		end,
+		args = {
+			header = {
+				order = 1,
+				type = "header",
+				name = L["Energy"]
+			},
+			enable = {
+				order = 2,
+				type = "toggle",
+				name = L["Enable"]
+			},
+			width = {
+				order = 3,
+				type = "select",
+				name = L["Style"],
+				values = {
+					["fill"] = L["Filled"],
+					["spaced"] = L["Spaced"],
+					["inset"] = L["Inset"]
+				},
+				set = function(info, value)
+					E.db.unitframe.units[groupName].energy[info[#info]] = value
+
+					local frameName = E:StringTitle(groupName)
+					frameName = "ElvUF_"..frameName
+					frameName = frameName:gsub("t(arget)", "T%1")
+
+					if numUnits then
+						for i = 1, numUnits do
+							if _G[frameName..i] then
+								local min, max = _G[frameName..i].Power:GetMinMaxValues()
+								_G[frameName..i].Power:SetMinMaxValues(min, max + 500)
+								_G[frameName..i].Power:SetValue(1)
+								_G[frameName..i].Power:SetValue(0)
+							end
+						end
+					else
+						if _G[frameName] and _G[frameName].Power then
+							local min, max = _G[frameName].Power:GetMinMaxValues()
+							_G[frameName].Power:SetMinMaxValues(min, max + 500)
+							_G[frameName].Power:SetValue(1)
+							_G[frameName].Power:SetValue(0)
+						else
+							for i = 1, _G[frameName]:GetNumChildren() do
+								local child = select(i, _G[frameName]:GetChildren())
+								if child and child.Power then
+									local min, max = child.Power:GetMinMaxValues()
+									child.Power:SetMinMaxValues(min, max + 500)
+									child.Power:SetValue(1)
+									child.Power:SetValue(0)
+								end
+							end
+						end
+					end
+
+					updateFunc(UF, groupName, numUnits)
+				end
+			},
+			height = {
+				order = 4,
+				type = "range",
+				name = L["Height"],
+				min = ((E.db.unitframe.thinBorders or E.PixelMode) and 3 or 7), max = 50, step = 1
+			},
+			offset = {
+				order = 5,
+				type = "range",
+				name = L["Offset"],
+				desc = L["Offset of the powerbar to the healthbar, set to 0 to disable."],
+				min = 0, max = 20, step = 1
+			},
+			configureButton = {
+				order = 6,
+				type = "execute",
+				name = L["Coloring"],
+				desc = L["This opens the UnitFrames Color settings. These settings affect all unitframes."],
+				func = function() ACD:SelectGroup("ElvUI", "unitframe", "general", "allColorsGroup", "powerGroup") end
+			},
+			position = {
+				order = 7,
+				type = "select",
+				name = L["Text Position"],
+				values = positionValues
+			},
+			xOffset = {
+				order = 8,
+				type = "range",
+				name = L["Text xOffset"],
+				desc = L["Offset position for text."],
+				min = -300, max = 300, step = 1
+			},
+			yOffset = {
+				order = 9,
+				type = "range",
+				name = L["Text yOffset"],
+				desc = L["Offset position for text."],
+				min = -300, max = 300, step = 1
+			},
+			attachTextTo = {
+				order = 10,
+				type = "select",
+				name = L["Attach Text To"],
+				values = {
+					["Health"] = HEALTH,
+					["Power"] = L["Power"],
+					["Energy"] = L["Energy"],
+					["InfoPanel"] = L["Information Panel"],
+					["Frame"] = L["Frame"]
+				}
+			},
+			text_format = {
+				order = 100,
+				type = "input",
+				name = L["Text Format"],
+				desc = L["TEXT_FORMAT_DESC"],
+				width = "full"
+			}
+		}
+	}
+
+	if hasDetatchOption then
+		config.args.detachFromFrame = {
+			type = "toggle",
+			order = 11,
+			name = L["Detach From Frame"]
+		}
+		config.args.detachedWidth = {
+			type = "range",
+			order = 12,
+			name = L["Detached Width"],
+			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			min = 15, max = 1000, step = 1
+		}
+		config.args.parent = {
+			type = "select",
+			order = 11,
+			name = L["Parent"],
+			desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
+			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			values = {
+				["FRAME"] = "FRAME",
+				["UIPARENT"] = "UIPARENT"
+			}
+		}
+	end
+
+	if hasStrataLevel then
+		config.args.strataAndLevel = {
+			order = 101,
+			type = "group",
+			name = L["Strata and Level"],
+			get = function(info) return E.db.unitframe.units[groupName]["power"]["strataAndLevel"][ info[#info] ] end,
+			set = function(info, value) E.db.unitframe.units[groupName]["power"]["strataAndLevel"][ info[#info] ] = value updateFunc(UF, groupName, numUnits) end,
+			guiInline = true,
+			args = {
+				useCustomStrata = {
+					order = 1,
+					type = "toggle",
+					name = L["Use Custom Strata"]
+				},
+				frameStrata = {
+					order = 2,
+					type = "select",
+					name = L["Frame Strata"],
+					values = {
+						["BACKGROUND"] = "BACKGROUND",
+						["LOW"] = "LOW",
+						["MEDIUM"] = "MEDIUM",
+						["HIGH"] = "HIGH",
+						["DIALOG"] = "DIALOG",
+						["TOOLTIP"] = "TOOLTIP"
+					}
+				},
+				spacer = {
+					order = 3,
+					type = "description",
+					name = ""
+				},
+				useCustomLevel = {
+					order = 4,
+					type = "toggle",
+					name = L["Use Custom Level"]
+				},
+				frameLevel = {
+					order = 5,
+					type = "range",
+					name = L["Frame Level"],
+					min = 2, max = 128, step = 1
+				}
+			}
+		}
+	end
+
+	return config
+end
+
+local function GetOptionsTable_Rage(hasDetatchOption, updateFunc, groupName, numUnits, hasStrataLevel)
+	local config = {
+		order = 250,
+		type = "group",
+		name = L["Rage"],
+		get = function(info)
+			return E.db.unitframe.units[groupName].rage[info[#info]]
+		end,
+		set = function(info, value)
+			E.db.unitframe.units[groupName].rage[info[#info]] = value
+			updateFunc(UF, groupName, numUnits)
+		end,
+		args = {
+			header = {
+				order = 1,
+				type = "header",
+				name = L["Rage"]
+			},
+			enable = {
+				order = 2,
+				type = "toggle",
+				name = L["Enable"]
+			},
+			width = {
+				order = 3,
+				type = "select",
+				name = L["Style"],
+				values = {
+					["fill"] = L["Filled"],
+					["spaced"] = L["Spaced"],
+					["inset"] = L["Inset"]
+				},
+				set = function(info, value)
+					E.db.unitframe.units[groupName].rage[info[#info]] = value
+
+					local frameName = E:StringTitle(groupName)
+					frameName = "ElvUF_"..frameName
+					frameName = frameName:gsub("t(arget)", "T%1")
+
+					if numUnits then
+						for i = 1, numUnits do
+							if _G[frameName..i] then
+								local min, max = _G[frameName..i].Power:GetMinMaxValues()
+								_G[frameName..i].Power:SetMinMaxValues(min, max + 500)
+								_G[frameName..i].Power:SetValue(1)
+								_G[frameName..i].Power:SetValue(0)
+							end
+						end
+					else
+						if _G[frameName] and _G[frameName].Power then
+							local min, max = _G[frameName].Power:GetMinMaxValues()
+							_G[frameName].Power:SetMinMaxValues(min, max + 500)
+							_G[frameName].Power:SetValue(1)
+							_G[frameName].Power:SetValue(0)
+						else
+							for i = 1, _G[frameName]:GetNumChildren() do
+								local child = select(i, _G[frameName]:GetChildren())
+								if child and child.Power then
+									local min, max = child.Power:GetMinMaxValues()
+									child.Power:SetMinMaxValues(min, max + 500)
+									child.Power:SetValue(1)
+									child.Power:SetValue(0)
+								end
+							end
+						end
+					end
+
+					updateFunc(UF, groupName, numUnits)
+				end
+			},
+			height = {
+				order = 4,
+				type = "range",
+				name = L["Height"],
+				min = ((E.db.unitframe.thinBorders or E.PixelMode) and 3 or 7), max = 50, step = 1
+			},
+			offset = {
+				order = 5,
+				type = "range",
+				name = L["Offset"],
+				desc = L["Offset of the powerbar to the healthbar, set to 0 to disable."],
+				min = 0, max = 20, step = 1
+			},
+			configureButton = {
+				order = 6,
+				type = "execute",
+				name = L["Coloring"],
+				desc = L["This opens the UnitFrames Color settings. These settings affect all unitframes."],
+				func = function() ACD:SelectGroup("ElvUI", "unitframe", "general", "allColorsGroup", "powerGroup") end
+			},
+			position = {
+				order = 7,
+				type = "select",
+				name = L["Text Position"],
+				values = positionValues
+			},
+			xOffset = {
+				order = 8,
+				type = "range",
+				name = L["Text xOffset"],
+				desc = L["Offset position for text."],
+				min = -300, max = 300, step = 1
+			},
+			yOffset = {
+				order = 9,
+				type = "range",
+				name = L["Text yOffset"],
+				desc = L["Offset position for text."],
+				min = -300, max = 300, step = 1
+			},
+			attachTextTo = {
+				order = 10,
+				type = "select",
+				name = L["Attach Text To"],
+				values = {
+					["Health"] = HEALTH,
+					["Power"] = L["Power"],
+					["Rage"] = L["Rage"],
+					["InfoPanel"] = L["Information Panel"],
+					["Frame"] = L["Frame"]
+				}
+			},
+			text_format = {
+				order = 100,
+				type = "input",
+				name = L["Text Format"],
+				desc = L["TEXT_FORMAT_DESC"],
+				width = "full"
+			}
+		}
+	}
+
+	if hasDetatchOption then
+		config.args.detachFromFrame = {
+			type = "toggle",
+			order = 11,
+			name = L["Detach From Frame"]
+		}
+		config.args.detachedWidth = {
+			type = "range",
+			order = 12,
+			name = L["Detached Width"],
+			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			min = 15, max = 1000, step = 1
+		}
+		config.args.parent = {
+			type = "select",
+			order = 11,
+			name = L["Parent"],
+			desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
+			disabled = function() return not E.db.unitframe.units[groupName].power.detachFromFrame end,
+			values = {
+				["FRAME"] = "FRAME",
+				["UIPARENT"] = "UIPARENT"
+			}
+		}
+	end
+
+	if hasStrataLevel then
+		config.args.strataAndLevel = {
+			order = 101,
+			type = "group",
+			name = L["Strata and Level"],
+			get = function(info) return E.db.unitframe.units[groupName]["power"]["strataAndLevel"][ info[#info] ] end,
+			set = function(info, value) E.db.unitframe.units[groupName]["power"]["strataAndLevel"][ info[#info] ] = value updateFunc(UF, groupName, numUnits) end,
 			guiInline = true,
 			args = {
 				useCustomStrata = {
@@ -3194,12 +3609,7 @@ E.Options.args.unitframe = {
 									order = 11,
 									type = "color",
 									name = L["Non-Interruptable"]
-								},
-								castInterruptedColor = {
-									order = 12,
-									type = "color",
-									name = L["Interrupted"]
-								},
+								}
 							}
 						},
 						auraBars = {
@@ -3288,13 +3698,6 @@ E.Options.args.unitframe = {
 										return t.r, t.g, t.b, t.a, d.r, d.g, d.b
 									end,
 									set = function(info, r, g, b)
-										if E:CheckClassColor(r, g, b) then
-											local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
-											r = classColor.r
-											g = classColor.g
-											b = classColor.b
-										end
-
 										local t = E.db.unitframe.colors.auraBarBuff
 										t.r, t.g, t.b = r, g, b
 
@@ -3751,6 +4154,8 @@ E.Options.args.unitframe.args.player = {
 		health = GetOptionsTable_Health(false, UF.CreateAndUpdateUF, "player"),
 		infoPanel = GetOptionsTable_InformationPanel(UF.CreateAndUpdateUF, "player"),
 		power = GetOptionsTable_Power(true, UF.CreateAndUpdateUF, "player", nil, true),
+		energy = GetOptionsTable_Energy(true, UF.CreateAndUpdateUF, "player", nil, true),
+		rage = GetOptionsTable_Rage(true, UF.CreateAndUpdateUF, "player", nil, true),
 		name = GetOptionsTable_Name(UF.CreateAndUpdateUF, "player"),
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "player"),
 		fader = GetOptionsTable_Fader(UF.CreateAndUpdateUF, "player"),
@@ -3806,7 +4211,7 @@ E.Options.args.unitframe.args.player = {
 					order = 6,
 					type = "toggle",
 					name = L["Additional Power Text"],
-					hidden = function() return E.myclass ~= "DRUID" end,
+					hidden = function() return false end,
 					disabled = function() return not E.db.unitframe.units.player.classbar.enable end
 				},
 				spacer = {
@@ -5261,7 +5666,7 @@ E.Options.args.unitframe.args.pet = {
 			name = HAPPINESS,
 			get = function(info) return E.db.unitframe.units.pet.happiness[info[#info]] end,
 			set = function(info, value) E.db.unitframe.units.pet.happiness[info[#info]] = value; UF:CreateAndUpdateUF("pet") end,
-			disabled = E.myclass ~= "HUNTER",
+			disabled = false,
 			args = {
 				header = {
 					order = 1,
@@ -6642,75 +7047,6 @@ E.Options.args.unitframe.args.raid = {
 							E:SetToFilterConfig("Buff Indicator")
 						end
 					end
-				}
-			}
-		},
-		roleIcon = {
-			order = 700,
-			type = "group",
-			name = L["Role Icon"],
-			get = function(info) return E.db.unitframe.units.raid.roleIcon[info[#info]] end,
-			set = function(info, value) E.db.unitframe.units.raid.roleIcon[info[#info]] = value UF:CreateAndUpdateHeaderGroup("raid") end,
-			args = {
-				header = {
-					order = 1,
-					type = "header",
-					name = L["Role Icon"]
-				},
-				enable = {
-					order = 2,
-					type = "toggle",
-					name = L["Enable"]
-				},
-				position = {
-					order = 3,
-					type = "select",
-					name = L["Position"],
-					values = positionValues
-				},
-				attachTo = {
-					order = 4,
-					type = "select",
-					name = L["Attach To"],
-					values = attachToValues
-				},
-				xOffset = {
-					order = 5,
-					type = "range",
-					name = L["X-Offset"],
-					min = -300, max = 300, step = 1
-				},
-				yOffset = {
-					order = 6,
-					type = "range",
-					name = L["Y-Offset"],
-					min = -300, max = 300, step = 1
-				},
-				size = {
-					order = 7,
-					type = "range",
-					name = L["Size"],
-					min = 4, max = 100, step = 1
-				},
-				tank = {
-					order = 8,
-					type = "toggle",
-					name = L["Show For Tanks"]
-				},
-				healer = {
-					order = 9,
-					type = "toggle",
-					name = L["Show For Healers"]
-				},
-				damager = {
-					order = 10,
-					type = "toggle",
-					name = L["Show For DPS"],
-				},
-				combatHide = {
-					order = 11,
-					type = "toggle",
-					name = L["Hide In Combat"]
 				}
 			}
 		},

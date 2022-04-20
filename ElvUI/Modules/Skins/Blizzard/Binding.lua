@@ -8,8 +8,11 @@ S:AddCallbackForAddon("Blizzard_BindingUI", "Skin_Blizzard_BindingUI", function(
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.binding then return end
 
 	KeyBindingFrame:StripTextures()
-	KeyBindingFrame:SetTemplate("Transparent")
-	KeyBindingFrame:Size(596, 490)
+	KeyBindingFrame:CreateBackdrop("Transparent")
+	KeyBindingFrame.backdrop:Point("TOPLEFT", 2, 0)
+	KeyBindingFrame.backdrop:Point("BOTTOMRIGHT", -42, 13)
+
+	S:SetBackdropHitRect(KeyBindingFrame)
 
 	local bindingKey1, bindingKey2
 	for i = 1, KEY_BINDINGS_DISPLAYED do
@@ -30,13 +33,9 @@ S:AddCallbackForAddon("Blizzard_BindingUI", "Skin_Blizzard_BindingUI", function(
 	S:HandleButton(KeyBindingFrameOkayButton)
 	S:HandleButton(KeyBindingFrameUnbindButton)
 
-	KeyBindingFrameCharacterButton:Point("TOPLEFT", KeyBindingFrame, "TOPRIGHT", -204, -12)
+	KeyBindingFrameScrollFrameScrollBar:Point("TOPLEFT", KeyBindingFrameScrollFrame, "TOPRIGHT", 10, -21)
+	KeyBindingFrameScrollFrameScrollBar:Point("BOTTOMLEFT", KeyBindingFrameScrollFrame, "BOTTOMRIGHT", 10, 17)
 
-	KeyBindingFrameScrollFrameScrollBar:Point("TOPLEFT", KeyBindingFrameScrollFrame, "TOPRIGHT", 8, -21)
-	KeyBindingFrameScrollFrameScrollBar:Point("BOTTOMLEFT", KeyBindingFrameScrollFrame, "BOTTOMRIGHT", 8, 17)
-
-	KeyBindingFrameDefaultButton:Point("BOTTOMLEFT", 8, 8)
-	KeyBindingFrameCancelButton:Point("BOTTOMRIGHT", -8, 8)
 	KeyBindingFrameOkayButton:Point("RIGHT", KeyBindingFrameCancelButton, "LEFT", -3, 0)
 	KeyBindingFrameUnbindButton:Point("RIGHT", KeyBindingFrameOkayButton, "LEFT", -3, 0)
 end)

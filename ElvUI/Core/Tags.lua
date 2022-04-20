@@ -113,7 +113,7 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 		end
 	end
 
-	ElvUF.Tags.Events[format("health:%s-nostatus", tagTextFormat)] = "UNIT_HEALTH UNIT_MAXHEALTH"
+	ElvUF.Tags.Events[format("health:%s-nostatus", tagTextFormat)] = "UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH"
 	ElvUF.Tags.Methods[format("health:%s-nostatus", tagTextFormat)] = function(unit)
 		return E:GetFormattedText(textFormat, UnitHealth(unit), UnitHealthMax(unit))
 	end
@@ -138,6 +138,28 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 			return ""
 		else
 			return E:GetFormattedText(textFormat, UnitPower(unit, SPELL_POWER_MANA), UnitPowerMax(unit, SPELL_POWER_MANA))
+		end
+	end
+
+	ElvUF.Tags.Events[format("energy:%s", tagTextFormat)] = "UNIT_MAXENERGY UNIT_ENERGY_FREQUENT"
+	ElvUF.Tags.Methods[format("energy:%s", tagTextFormat)] = function(unit)
+		local min = UnitPower(unit, 3)
+
+		if min == 0 and tagTextFormat ~= "deficit" then
+			return ""
+		else
+			return E:GetFormattedText(textFormat, UnitPower(unit, 3), UnitPowerMax(unit, 3))
+		end
+	end
+
+	ElvUF.Tags.Events[format("rage:%s", tagTextFormat)] = "UNIT_MAXRAGE UNIT_RAGE_FREQUENT"
+	ElvUF.Tags.Methods[format("rage:%s", tagTextFormat)] = function(unit)
+		local min = UnitPower(unit, 1)
+
+		if min == 0 and tagTextFormat ~= "deficit" then
+			return ""
+		else
+			return E:GetFormattedText(textFormat, UnitPower(unit, 1), UnitPowerMax(unit, 1))
 		end
 	end
 end
@@ -172,7 +194,7 @@ for textFormat, length in pairs({veryshort = 5, short = 10, medium = 15, long = 
 		return name ~= nil and E:ShortenString(name, length) or nil
 	end
 
-	ElvUF.Tags.Events[format("name:%s:status", textFormat)] = "UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED UNIT_HEALTH"
+	ElvUF.Tags.Events[format("name:%s:status", textFormat)] = "UNIT_NAME_UPDATE UNIT_CONNECTION PLAYER_FLAGS_CHANGED UNIT_HEALTH_FREQUENT"
 	ElvUF.Tags.Methods[format("name:%s:status", textFormat)] = function(unit)
 		local status = UnitIsDead(unit) and L["Dead"] or UnitIsGhost(unit) and L["Ghost"] or not UnitIsConnected(unit) and L["Offline"]
 		local name = UnitName(unit)
@@ -274,10 +296,7 @@ ElvUF.Tags.Methods["namecolor"] = function(unit)
 	local unitReaction = UnitReaction(unit, "player")
 	local unitPlayer = UnitIsPlayer(unit)
 	if unitPlayer then
-		local _, unitClass = UnitClass(unit)
-		local class = ElvUF.colors.class[unitClass]
-		if not class then return "" end
-		return Hex(class[1], class[2], class[3])
+		return Hex(E.media.herocolor.r, E.media.herocolor.g, E.media.herocolor.b)
 	elseif unitReaction then
 		local reaction = ElvUF.colors.reaction[unitReaction]
 		return Hex(reaction[1], reaction[2], reaction[3])
@@ -575,24 +594,6 @@ ElvUF.Tags.Methods["class"] = function(unit)
 	return UnitClass(unit)
 end
 
-ElvUF.Tags.Events["specialization"] = "UNIT_NAME_UPDATE ACTIVE_TALENT_GROUP_CHANGED PLAYER_TALENT_UPDATE INSPECT_TALENT_READY UNIT_PORTRAIT_UPDATE"
-ElvUF.Tags.Methods["specialization"] = function(unit)
-	if (UnitIsPlayer(unit)) then
-		local _, specName
-		local GUID = UnitGUID(unit)
-
-		if GUID == E.myguid then
-			_, specName = E:GetTalentSpecInfo()
-		else
-			if CanInspect(unit) then
-				_, specName = E:GetTalentSpecInfo(true)
-			end
-		end
-
-		return specName
-	end
-end
-
 ElvUF.Tags.Events["name:title"] = "UNIT_NAME_UPDATE"
 ElvUF.Tags.Methods["name:title"] = function(unit)
 	if UnitIsPlayer(unit) then
@@ -603,6 +604,8 @@ E.TagInfo = {
 	--Colors
 	["namecolor"] = {category = "Colors", description = "Colors names by player class or NPC reaction"},
 	["powercolor"] = {category = "Colors", description = "Colors the power text based upon its type"},
+	["energycolor"] = {category = "Colors", description = "Colors the energy text based upon its type"},
+	["ragecolor"] = {category = "Colors", description = "Colors the rage text based upon its type"},
 	["difficultycolor"] = {category = "Colors", description = "Colors the following tags by difficulty, red for impossible, orange for hard, green for easy"},
 	["healthcolor"] = {category = "Colors", description = "Changes color of health text, depending on the unit's current health"},
 	["threatcolor"] = {category = "Colors", description = "Changes color of health, depending on the unit's threat situation"},
@@ -690,6 +693,22 @@ E.TagInfo = {
 	["perpp"] = {category = "Power", description = "Displays the unit's percentage power without decimals "},
 	["maxpp"] = {category = "Power", description = "Displays the max amount of power of the unit in whole numbers without decimals"},
 	["missingpp"] = {category = "Power", description = "Displays the missing power of the unit in whole numbers when not at full power"},
+	--Energy
+	["energy:current"] = {category = "Energy", description = "Displays the unit's current amount of energy"},
+	["energy:current-percent"] = {category = "Energy", description = "Displays the current energy and energy as a percentage, separated by a dash"},
+	["energy:current-max"] = {category = "Energy", description = "Displays the current energy and max energy, separated by a dash"},
+	["energy:current-max-percent"] = {category = "Energy", description = "Displays the current energy and max energy, separated by a dash (% when not full energy)"},
+	["energy:percent"] = {category = "Energy", description = "Displays the unit's energy as a percentage"},
+	["energy:max"] = {category = "Energy", description = "Displays the unit's maximum energy"},
+	["energy:deficit"] = {category = "Energy", description = "Displays the energy as a deficit (Total Energy - Current Energy = -Deficit)"},
+	--Rage
+	["rage:current"] = {category = "Rage", description = "Displays the unit's current amount of rage"},
+	["rage:current-percent"] = {category = "Rage", description = "Displays the current rage and rage as a percentage, separated by a dash"},
+	["rage:current-max"] = {category = "Rage", description = "Displays the current rage and max rage, separated by a dash"},
+	["rage:current-max-percent"] = {category = "Rage", description = "Displays the current rage and max rage, separated by a dash (% when not full rage)"},
+	["rage:percent"] = {category = "Rage", description = "Displays the unit's rage as a percentage"},
+	["rage:max"] = {category = "Rage", description = "Displays the unit's maximum rage"},
+	["rage:deficit"] = {category = "Rage", description = "Displays the rage as a deficit (Total Rage - Current Rage = -Deficit)"},
 	--Realm
 	["realm"] = {category = "Realm", description = "Displays the server name"},
 	["realm:translit"] = {category = "Realm", description = "Displays the server name with transliteration for cyrillic letters"},
@@ -720,7 +739,6 @@ E.TagInfo = {
 	["threat:current"] = {category = "Threat", description = "Displays the current threat as a value"},
 	--Miscellaneous
 	["smartclass"] = {category = "Miscellaneous", description = "Displays the player's class or creature's type"},
-	["specialization"] = {category = "Miscellaneous", description = "Displays your current specialization as text"},
 	["class"] = {category = "Miscellaneous", description = "Displays the class of the unit, if that unit is a player"},
 	["difficulty"] = {category = "Miscellaneous", description = "Changes color of the next tag based on how difficult the unit is compared to the players level"},
 	["faction"] = {category = "Miscellaneous", description = "Displays 'Aliance' or 'Horde'"},
