@@ -167,7 +167,7 @@ function UF:Configure_Rage(frame)
 				rage:Point("TOPLEFT", anchor, "TOPLEFT", -frame.RAGEBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.RAGEBAR_OFFSET)
 				rage:Point("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", -frame.RAGEBAR_OFFSET, -frame.RAGEBAR_OFFSET)
 			end
-			rage:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
+			rage:SetFrameLevel(frame.Health:GetFrameLevel() - 7) --Health uses 10
 		elseif frame.USE_INSET_RAGEBAR then
 			rage:Height(frame.RAGEBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
 			rage:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.BORDER + frame.BORDER * 2, frame.BORDER + frame.BORDER * 2)

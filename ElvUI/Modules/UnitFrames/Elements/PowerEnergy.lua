@@ -165,7 +165,7 @@ function UF:Configure_Energy(frame)
 				energy:Point("TOPLEFT", anchor, "TOPLEFT", -frame.ENERGYBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.ENERGYBAR_OFFSET)
 				energy:Point("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", -frame.ENERGYBAR_OFFSET, -frame.ENERGYBAR_OFFSET)
 			end
-			energy:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
+			energy:SetFrameLevel(frame.Health:GetFrameLevel() - 6) --Health uses 10
 		elseif frame.USE_INSET_ENERGYBAR then
 			if frame.USE_INSET_RAGEBAR and frame.USE_RAGEBAR then
 				energy:Point("BOTTOMLEFT", frame.Rage, "TOPLEFT",
