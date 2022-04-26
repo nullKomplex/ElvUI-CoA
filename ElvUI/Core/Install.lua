@@ -27,7 +27,7 @@ local FCF_StopDragging = FCF_StopDragging
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
 local CLASS, CONTINUE, PREVIOUS = CLASS, CONTINUE, PREVIOUS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
-local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
+local LOOT, GENERAL, TRADE, GUILD, WHISPER = LOOT, GENERAL, TRADE, GUILD, WHISPER
 local GUILD_EVENT_LOG = GUILD_EVENT_LOG
 
 local CURRENT_PAGE = 0
@@ -43,6 +43,13 @@ local function SetupChat(noDisplayMsg)
 	FCF_UnDockFrame(ChatFrame3)
 	FCF_SetLocked(ChatFrame3, 1)
 	ChatFrame3:Show()
+	
+	FCF_OpenNewWindow(GUILD)
+	FCF_OpenNewWindow(WHISPER)
+	FCF_DockFrame(ChatFrame4)
+	FCF_DockFrame(ChatFrame5)
+	ChatFrame4:Show()
+	ChatFrame5:Show()
 
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G[format("ChatFrame%s", i)]
@@ -69,6 +76,10 @@ local function SetupChat(noDisplayMsg)
 			FCF_SetWindowName(frame, GUILD_EVENT_LOG)
 		elseif i == 3 then
 			FCF_SetWindowName(frame, LOOT.." / "..TRADE)
+		elseif i == 4 then
+			FCF_SetWindowName(frame, GUILD)
+		elseif i == 5 then
+			FCF_SetWindowName(frame, WHISPER)
 		end
 	end
 
@@ -84,9 +95,25 @@ local function SetupChat(noDisplayMsg)
 		ChatFrame_AddMessageGroup(ChatFrame3, v)
 	end
 
+	local chatGroup = {"GUILD", "OFFICER", "GUILD_ACHIEVEMENT"}
+	ChatFrame_RemoveAllMessageGroups(ChatFrame4)
+	for _, v in ipairs(chatGroup) do
+		ChatFrame_AddMessageGroup(ChatFrame4, v)
+	end
+
+	local chatGroup = {"WHISPER", "BN_WHISPER"}
+	ChatFrame_RemoveAllMessageGroups(ChatFrame5)
+	for _, v in ipairs(chatGroup) do
+		ChatFrame_AddMessageGroup(ChatFrame5, v)
+	end
+
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
 	ChatFrame_RemoveChannel(ChatFrame1, TRADE)
+	ChatFrame_RemoveChannel(ChatFrame1, "Ascension")
+	ChatFrame_RemoveChannel(ChatFrame1, "World")
 	ChatFrame_AddChannel(ChatFrame3, TRADE)
+	ChatFrame_AddChannel(ChatFrame3, "Ascension")
+	ChatFrame_AddChannel(ChatFrame3, "World")
 
 	chatGroup = {"SAY", "EMOTE", "YELL", "WHISPER", "PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING", "BATTLEGROUND", "BATTLEGROUND_LEADER", "GUILD", "OFFICER", "ACHIEVEMENT", "GUILD_ACHIEVEMENT"}
 	for i = 1, MAX_WOW_CHAT_CHANNELS do
