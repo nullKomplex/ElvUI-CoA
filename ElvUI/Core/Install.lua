@@ -132,8 +132,8 @@ local function SetupChat(noDisplayMsg)
 	["LocalDefense"] = {232/255, 228/255, 121/255},
 	["GuildRecruitment"] = {64/255, 255/255, 64/255},
 	["LookingForGroup"] = {0/255, 206/255, 255/255},
-	["Ascension"] = {199/255, 255/255, 191/255},
-	["World"] = {199/255, 255/255, 191/255},
+	["Ascension"] = {255/255, 248/255, 163/255},
+	["World"] = {255/255, 248/255, 163/255},
 	}
 
 	-- Itterate through the channel list, and set the colors for each specific channel
