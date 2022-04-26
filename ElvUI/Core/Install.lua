@@ -144,6 +144,9 @@ local function SetupChat(noDisplayMsg)
 		if replacementColors[chanList[i+1]] ~= nil then
 			ChangeChatColor("CHANNEL"..chanList[i], unpack(replacementColors[chanList[i+1]]))
 		end
+		if chanList[i+1] == "GuildRecruitment" then
+			ChatFrame_AddChannel(ChatFrame1, "GuildRecruitment")
+		end
 	end
 
 	if E.Chat then
