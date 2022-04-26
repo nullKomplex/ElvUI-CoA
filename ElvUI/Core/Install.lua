@@ -47,9 +47,11 @@ local function SetupChat(noDisplayMsg)
 	FCF_OpenNewWindow(GUILD)
 	FCF_OpenNewWindow(WHISPER)
 	FCF_DockFrame(ChatFrame4)
+	FCF_SetLocked(ChatFrame4, 1)
 	FCF_DockFrame(ChatFrame5)
-	ChatFrame4:Show()
-	ChatFrame5:Show()
+	FCF_SetLocked(ChatFrame5, 1)
+
+	FCF_SelectDockFrame(ChatFrame1)
 
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G[format("ChatFrame%s", i)]
