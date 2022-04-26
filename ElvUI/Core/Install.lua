@@ -123,10 +123,26 @@ local function SetupChat(noDisplayMsg)
 		ToggleChatColorNamesByClassGroup(true, v)
 	end
 
-	-- Adjust Chat Colors
-	ChangeChatColor("CHANNEL1", 195/255, 230/255, 232/255) -- General
-	ChangeChatColor("CHANNEL2", 232/255, 158/255, 121/255) -- Trade
-	ChangeChatColor("CHANNEL3", 232/255, 228/255, 121/255) -- Local Defense
+	-- Create a list of replacement colors
+	local replacementColors = {
+	["General"] = {195/255, 230/255, 232/255},
+	["Trade"] = {232/255, 158/255, 121/255},
+	["LocalDefense"] = {232/255, 228/255, 121/255},
+	["GuildRecruitment"] = {64/255, 255/255, 64/255},
+	["LookingForGroup"] = {0/255, 206/255, 255/255},
+	["Ascension"] = {199/255, 255/255, 191/255},
+	["World"] = {199/255, 255/255, 191/255},
+	}
+
+	-- Itterate through the channel list, and set the colors for each specific channel
+	-- We need to do this because the channels change around so much
+	-- low level characters start off with channel 1 being Ascension
+	local chanList = { GetChannelList() }
+	for i=1, #chanList, 2 do
+		if replacementColors[chanList[i+1]] ~= nil then
+			ChangeChatColor("CHANNEL"..chanList[i], unpack(replacementColors[chanList[i+1]]))
+		end
+	end
 
 	if E.Chat then
 		E.Chat:PositionChat(true)
