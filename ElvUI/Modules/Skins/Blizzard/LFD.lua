@@ -30,11 +30,26 @@ S:AddCallback("Skin_LFD", function()
 	AscensionPVEFrameLFDFrame:StripTextures(true)
 	AscensionPVEFrameLFDFrame:CreateBackdrop("Transparent")
 
+	AscensionPVEFrameLFDFrameRandom:StripTextures(true)
+
 	AscensionLFGFrameMenuNineSlice:StripTextures(true)
 	--AscensionLFGFrameMenuNineSlice:CreateBackdrop("Transparent")
 
 	AscensionLFGFrameNineSlice:StripTextures(true)
 	--AscensionLFGFrameNineSlice:CreateBackdrop("Transparent")
+
+	-- PvP Tab
+	AscensionPVPFrame:StripTextures(true)
+	AscensionPVPFrame:CreateBackdrop("Transparent")
+	AscensionPVPFrameCasualFrameInset:StripTextures(true)
+	AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
+	AscensionPVPFrameHonorInset:StripTextures(true)
+	AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
+	S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
+	S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+
+	-- PvP Ruleset Frames
+	AscensionRulesetFrame:StripTextures(true)
 
 	S:HookScript(LFDParentFrame, "OnShow", function(self)
 		S:SetUIPanelWindowInfo(self, "width", 341)
