@@ -36,20 +36,56 @@ S:AddCallback("Skin_LFD", function()
 	--AscensionLFGFrameMenuNineSlice:CreateBackdrop("Transparent")
 
 	AscensionLFGFrameNineSlice:StripTextures(true)
-	--AscensionLFGFrameNineSlice:CreateBackdrop("Transparent")
 
 	-- PvP Tab
-	AscensionPVPFrame:StripTextures(true)
-	AscensionPVPFrame:CreateBackdrop("Transparent")
-	AscensionPVPFrameCasualFrameInset:StripTextures(true)
-	AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
-	AscensionPVPFrameHonorInset:StripTextures(true)
-	AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
-	S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
-	S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+		-- Progress Bar
+			--Honor
+			S:HandleStatusBar(AscensionPVPFrameHonorBar)
+			--Arena
+			S:HandleStatusBar(AscensionPVPFrameArenaBar)
 
-	-- PvP Ruleset Frames
+		-- Quick Match
+		AscensionPVPFrame:StripTextures(true)
+		AscensionPVPFrame:CreateBackdrop("Transparent")
+		AscensionPVPFrameCasualFrame:StripTextures(true)
+		AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
+		AscensionPVPFrameCasualFrameInset:StripTextures(true)
+		AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
+			-- Buttons (Queues)
+			S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
+			S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
+			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish1v1Button)
+			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish2v2Button)
+			S:HandleButton(AscensionPVPFrameCasualFrameSkirmish3v3Button)
+		-- Honor Section
+		AscensionPVPFrameHonorInset:StripTextures(true)
+		AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
+
+		-- Buttons
+		S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
+		S:HandleButton(AscensionPVPFrameCasualFrameSoloQueueButton)
+
+		--Rated Tab
+		AscensionPVPFrameRatedFrame:StripTextures(true)
+		AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
+			-- Buttons (Rated)
+			S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
+			S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
+			S:HandleButton(AscensionPVPFrameRatedFrameArena3v3)
+			S:HandleButton(AscensionPVPFrameRatedFrameSoloQueueButton)
+			S:HandleButton(AscensionPVPFrameRatedFrameQueueButton)
+
+	-- PvP Ruleset
 	AscensionRulesetFrame:StripTextures(true)
+
+	--[[for i = 1, 3 do
+		local pvpruleset = _G["AscensionRulesetFrameRuleset"..i]
+		--pvpruleset:StripTextures(true)
+		S:HandleButton(pvpruleset.Select)
+	end
+	]]--
+
+
 
 	S:HookScript(LFDParentFrame, "OnShow", function(self)
 		S:SetUIPanelWindowInfo(self, "width", 341)
@@ -98,6 +134,21 @@ S:AddCallback("Skin_LFD", function()
 	S:HandleScrollBar(AscensionPVEFrameLFDFrameRandomScrollFrameScrollBar)
 	S:HandleScrollBar(AscensionPVEFrameLFDFrameSpecificListScrollFrameScrollBar)
 
+	--Side menu buttons
+	for i = 1, 3 do
+		local sidebutton = _G["AscensionLFGFrameButton"..i]
+	S:HandleButton(sidebutton)
+	end
+
+	--[[Tabs (will come back to this... will investigate)
+	for i = 1, 3 do
+		local frame = _G["AscensionLFGFrameTab"..i]
+		S:HandleButton(frame)
+		--frame:StripTextures(true)
+		frame:Size(10,22)
+	end
+	]]--
+	
 	S:HandleButton(AscensionPVEFrameLFDFrameFindGroupButton)
 	--S:HandleButton(AscensionPVEFrameLFDFrameCancelButton)
 
