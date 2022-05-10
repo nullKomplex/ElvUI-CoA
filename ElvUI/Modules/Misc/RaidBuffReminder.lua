@@ -334,6 +334,7 @@ function RB:UpdatePosition()
 end
 
 function RB:UpdateDefaultIcons()
+	local isCaster = E.private.general.reminder.classtype == "Caster"
 	self.DefaultIcons = {
 		[1] = "Interface\\Icons\\INV_Potion_97",
 		[2] = "Interface\\Icons\\Spell_Misc_Food",
@@ -341,26 +342,26 @@ function RB:UpdateDefaultIcons()
 		[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
 		[5] = "Interface\\Icons\\Spell_Holy_WordFortitude",
 		[6] = "Interface\\Icons\\spell_nature_lightningshield",
-		[7] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_holy_fistofjustice",
+		[7] = (isCaster and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_holy_fistofjustice",
 		[8] = "Interface\\Icons\\ability_warrior_rallyingcry",
 		[9] = "Interface\\Icons\\spell_nature_stoneskintotem",
-		[10] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_nature_thorns",
-		[11] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_fire_totemofwrath") or "Interface\\Icons\\spell_nature_earthbindtotem",
+		[10] = (isCaster and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_nature_thorns",
+		[11] = (isCaster and "Interface\\Icons\\spell_fire_totemofwrath") or "Interface\\Icons\\spell_nature_earthbindtotem",
 		[12] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
-		[13] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
-		[14] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_nature_forceofnature") or "Interface\\Icons\\spell_nature_windfury",
-		[15] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_holy_prayerofspirit") or "Interface\\Icons\\ability_trueshot",
+		[13] = (isCaster and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
+		[14] = (isCaster and "Interface\\Icons\\spell_nature_forceofnature") or "Interface\\Icons\\spell_nature_windfury",
+		[15] = (isCaster and "Interface\\Icons\\spell_holy_prayerofspirit") or "Interface\\Icons\\ability_trueshot",
 		[16] = "Interface\\Icons\\spell_nature_starfall",
 	}
 
-	self.Spell7Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell7Buffs or self.AttackSpell7Buffs
+	self.Spell7Buffs = isCaster and self.CasterSpell7Buffs or self.AttackSpell7Buffs
 
-	self.Spell10Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell10Buffs or self.AttackSpell10Buffs
-	self.Spell11Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell11Buffs or self.AttackSpell11Buffs
+	self.Spell10Buffs = isCaster and self.CasterSpell10Buffs or self.AttackSpell10Buffs
+	self.Spell11Buffs = isCaster and self.CasterSpell11Buffs or self.AttackSpell11Buffs
 
-	self.Spell13Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell13Buffs or self.AttackSpell13Buffs
-	self.Spell14Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell14Buffs or self.AttackSpell14Buffs
-	self.Spell15Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell15Buffs or self.AttackSpell15Buffs
+	self.Spell13Buffs = isCaster and self.CasterSpell13Buffs or self.AttackSpell13Buffs
+	self.Spell14Buffs = isCaster and self.CasterSpell14Buffs or self.AttackSpell14Buffs
+	self.Spell15Buffs = isCaster and self.CasterSpell15Buffs or self.AttackSpell15Buffs
 end
 
 function RB:Initialize()
