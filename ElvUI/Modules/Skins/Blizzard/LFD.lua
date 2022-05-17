@@ -21,12 +21,14 @@ S:AddCallback("Skin_LFD", function()
 	AscensionLFGFrameMenu:StripTextures(true)
 	AscensionLFGFrameInset:StripTextures(true)
 	AscensionLFGFrameInset:CreateBackdrop("Transparent")
+	AscensionLFGFrameInsetNineSlice:StripTextures(true)
 	AscensionLFGFrameNineSlice:StripTextures(true)
 	AscensionLFGFrameMenuNineSlice:StripTextures(true)
 
 	AscensionPVEFrameLFDFrame:StripTextures(true)
 	AscensionPVEFrameLFDFrame:CreateBackdrop("Transparent")
 	AscensionPVEFrameLFDFrameRandom:StripTextures(true)
+	AscensionPVEFrameLFDFrameRandomScrollFrame:StripTextures(true)
 
 	S:HookScript(LFDParentFrame, "OnShow", function(self)
 		S:SetUIPanelWindowInfo(self, "width", 341)
@@ -84,14 +86,13 @@ S:AddCallback("Skin_LFD", function()
 	S:HandleButton(sidebutton)
 	end
 
-	--[[Tabs (will come back to this... will investigate)
+	--Tabs
 	for i = 1, 3 do
-		local frame = _G["AscensionLFGFrameTab"..i]
-		S:HandleButton(frame)
-		--frame:StripTextures(true)
-		frame:Size(10,22)
+		local tab = _G["AscensionLFGFrameTab"..i]
+		tab:Size(122, 32)
+		tab:GetRegions():SetPoint("CENTER", 0, 2)
+		S:HandleTab(tab)
 	end
-	]]--
 	
 	S:HandleButton(AscensionPVEFrameLFDFrameFindGroupButton)
 	--S:HandleButton(AscensionPVEFrameLFDFrameCancelButton)
@@ -137,6 +138,7 @@ S:AddCallback("Skin_LFD", function()
 		AscensionPVPFrameCasualFrame:CreateBackdrop("Transparent")
 		AscensionPVPFrameCasualFrameInset:StripTextures(true)
 		AscensionPVPFrameCasualFrameInset:CreateBackdrop("Transparent")
+		AscensionPVPFrameCasualFrameInsetNineSlice:StripTextures(true)
 			-- Buttons (Queues)
 			S:HandleButton(AscensionPVPFrameCasualFrameRandomBGButton)
 			S:HandleButton(AscensionPVPFrameCasualFrameCallToArmsButton1)
@@ -146,6 +148,7 @@ S:AddCallback("Skin_LFD", function()
 		-- Honor Section
 		AscensionPVPFrameHonorInset:StripTextures(true)
 		AscensionPVPFrameHonorInset:CreateBackdrop("Transparent")
+		AscensionPVPFrameHonorInsetNineSlice:StripTextures(true)
 
 		-- Buttons
 		S:HandleButton(AscensionPVPFrameCasualFrameQueueButton)
@@ -156,6 +159,7 @@ S:AddCallback("Skin_LFD", function()
 		AscensionPVPFrameRatedFrame:CreateBackdrop("Transparent")
 		AscensionPVPFrameRatedFrameInset:StripTextures(true)
 		AscensionPVPFrameRatedFrameInset:CreateBackdrop("Transparent")
+		AscensionPVPFrameRatedFrameInsetNineSlice:StripTextures(true)
 			-- Buttons (Rated)
 			S:HandleButton(AscensionPVPFrameRatedFrameArena1v1)
 			S:HandleButton(AscensionPVPFrameRatedFrameArena2v2)
