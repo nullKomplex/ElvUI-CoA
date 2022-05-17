@@ -12,6 +12,74 @@ local MAX_SKILLLINE_TABS = MAX_SKILLLINE_TABS
 S:AddCallback("Skin_Spellbook", function()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.spellbook then return end
 
+	-- AscensionSpellbook
+
+	AscensionSpellbookFrame:StripTextures(true)
+	AscensionSpellbookFrame:CreateBackdrop("Transparent")
+	AscensionSpellbookFrameNineSlice:StripTextures(true)
+	--AscensionSpellbookFrameNineSlice:CreateBackdrop("Transparent")
+	AscensionSpellbookFrameInset:StripTextures(true)
+	AscensionSpellbookFrameInset:CreateBackdrop("Transparent")
+
+	for i = 1, 3 do
+		local tab = _G["AscensionSpellbookFrameTab"..i]
+		tab:Size(122, 32)
+		--tab:GetNormalTexture():StripTextures(true)
+		--tab:GetDisabledTexture():StripTextures(true)
+		tab:GetRegions():SetPoint("CENTER", 0, 2)
+		S:HandleTab(tab)
+	end
+
+	AscensionSpellbookFrameTab1:Point("CENTER", AscensionSpellbookFrame, "BOTTOMLEFT", 72, 62)
+	AscensionSpellbookFrameTab2:Point("LEFT", AscensionSpellbookFrameTab1, "RIGHT", -15, 0)
+	AscensionSpellbookFrameTab3:Point("LEFT", AscensionSpellbookFrameTab2, "RIGHT", -15, 0)
+
+	S:HandleNextPrevButton(AscensionSpellbookFramePreviousPageButton, nil, nil, true)
+	S:HandleNextPrevButton(AscensionSpellbookFrameNextPageButton, nil, nil, true)
+
+	S:HandleCloseButton(AscensionSpellbookFrameCloseButton)
+
+	S:HandleCheckBox(AscensionSpellbookFrameContentSpellsShowAllSpellRanks)
+
+	for i = 1, SPELLS_PER_PAGE do
+		local button = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i]
+		local autoCast = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."AutoCastable"]
+		button:StripTextures()
+
+		autoCast:SetTexture("Interface\\Buttons\\UI-AutoCastableOverlay")
+		autoCast:SetOutside(button, 16, 16)
+
+		button:CreateBackdrop("Default", true)
+
+		_G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
+
+		E:RegisterCooldown(_G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."Cooldown"])
+	end
+
+	hooksecurefunc("SpellButton_UpdateButton", function(self)
+		local name = self:GetName()
+		_G[name.."SpellName"]:SetTextColor(1, 0.80, 0.10)
+		_G[name.."SubSpellName"]:SetTextColor(1, 1, 1)
+		_G[name.."Highlight"]:SetTexture(1, 1, 1, 0.3)
+	end)
+
+	for i = 1, MAX_SKILLLINE_TABS do
+		local tab = _G["AscensionSpellbookFrameSideBarTab"..i]
+
+		tab:StripTextures()
+		tab:StyleButton(nil, true)
+		tab:SetTemplate("Default", true)
+
+		tab:GetNormalTexture():SetInside()
+		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+	end
+
+	AscensionSpellbookFrameSideBarTab1:Point("TOPLEFT", AscensionSpellbookFrame, "TOPRIGHT")
+
+	SpellBookPageText:SetTextColor(1, 1, 1)
+
+
+	-- Blizz Spellbook (Leaving here for now)
 	SpellBookFrame:StripTextures(true)
 	SpellBookFrame:CreateBackdrop("Transparent")
 	SpellBookFrame.backdrop:Point("TOPLEFT", 11, -12)
