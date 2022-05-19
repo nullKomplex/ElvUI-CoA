@@ -25,8 +25,6 @@ S:AddCallback("Skin_Spellbook", function()
 	for i = 1, 3 do
 		local tab = _G["AscensionSpellbookFrameTab"..i]
 		tab:Size(122, 32)
-		--tab:GetNormalTexture():StripTextures(true)
-		--tab:GetDisabledTexture():StripTextures(true)
 		tab:GetRegions():SetPoint("CENTER", 0, 2)
 		S:HandleTab(tab)
 	end
@@ -78,44 +76,18 @@ S:AddCallback("Skin_Spellbook", function()
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
 
-	--Professions Tab
+	--Professions
 	AscensionSpellbookFrameContentProfessions:StripTextures(true)
-	--AscensionSpellbookFrameContentProfessions:CreateBackdrop("Transparent")
 
-		-- Primary Profession
-		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession1StatusBar)
-		AscensionSpellbookFrameContentProfessionsProfession1.MissingText:FontTemplate(nil,12)
-		AscensionSpellbookFrameContentProfessionsProfession1.MissingText:SetTextColor(1, 1, 1)
-		--AscensionSpellbookFrameContentProfessionsProfession1MainSpell:StripTextures(true)
-		AscensionSpellbookFrameContentProfessionsProfession1MainSpell:CreateBackdrop("Transparent")
+	for i = 1, 5 do
+		local professions = _G["AscensionSpellbookFrameContentProfessionsProfession"..i]
+		--_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."MainSpellIconTexture"]:SetTexCoord(unpack(E.TexCoords))
+		--_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."ExtraSpellIconTexture"]:SetTexCoord(unpack(E.TexCoords))
+		S:HandleStatusBar(_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."StatusBar"])
+		professions.MissingText:FontTemplate(nil,12)
+		professions.MissingText:SetTextColor(1, 1, 1)
 
-
-		-- Secondary Profession
-		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession2StatusBar)
-		AscensionSpellbookFrameContentProfessionsProfession2.MissingText:FontTemplate(nil,12)
-		AscensionSpellbookFrameContentProfessionsProfession2.MissingText:SetTextColor(1, 1, 1)
-
-		-- Cooking
-		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession3StatusBar)
-		AscensionSpellbookFrameContentProfessionsProfession3.MissingText:FontTemplate(nil,12)
-		AscensionSpellbookFrameContentProfessionsProfession3.MissingText:SetTextColor(1, 1, 1)
-
-		-- Fishing
-		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession4StatusBar)
-		AscensionSpellbookFrameContentProfessionsProfession4.MissingText:FontTemplate(nil,12)
-		AscensionSpellbookFrameContentProfessionsProfession4.MissingText:SetTextColor(1, 1, 1)
-
-		-- First Aid
-		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession5StatusBar)
-		AscensionSpellbookFrameContentProfessionsProfession5.MissingText:FontTemplate(nil,12)
-		AscensionSpellbookFrameContentProfessionsProfession5.MissingText:SetTextColor(1, 1, 1)
-
-for i = 1, 5 do
-	local professions = _G["AscensionSpellbookFrameContentProfessionsProfession"..i]
-
-	--S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession1StatusBar)
-
-end
+	end
 
 	-- Pet Tab
 	AscensionSpellbookFrameContentPetSpells:StripTextures(true)
