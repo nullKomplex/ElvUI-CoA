@@ -16,6 +16,7 @@ S:AddCallback("Skin_Spellbook", function()
 
 	AscensionSpellbookFrame:StripTextures(true)
 	AscensionSpellbookFrame:CreateBackdrop("Transparent")
+	--AscensionSpellbookFrame:Size  											-- for later on, the spells will need to be moved as well
 	AscensionSpellbookFrameNineSlice:StripTextures(true)
 	--AscensionSpellbookFrameNineSlice:CreateBackdrop("Transparent")
 	AscensionSpellbookFrameInset:StripTextures(true)
@@ -45,11 +46,10 @@ S:AddCallback("Skin_Spellbook", function()
 		local button = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i]
 		local autoCast = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."AutoCastable"]
 		button:StripTextures()
+		button:CreateBackdrop("Default", true)
 
 		autoCast:SetTexture("Interface\\Buttons\\UI-AutoCastableOverlay")
 		autoCast:SetOutside(button, 16, 16)
-
-		button:CreateBackdrop("Default", true)
 
 		_G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
 
@@ -77,6 +77,60 @@ S:AddCallback("Skin_Spellbook", function()
 	AscensionSpellbookFrameSideBarTab1:Point("TOPLEFT", AscensionSpellbookFrame, "TOPRIGHT")
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
+
+	--Professions Tab
+	AscensionSpellbookFrameContentProfessions:StripTextures(true)
+	--AscensionSpellbookFrameContentProfessions:CreateBackdrop("Transparent")
+
+		-- Primary Profession
+		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession1StatusBar)
+		AscensionSpellbookFrameContentProfessionsProfession1.MissingText:FontTemplate(nil,12)
+		AscensionSpellbookFrameContentProfessionsProfession1.MissingText:SetTextColor(1, 1, 1)
+		--AscensionSpellbookFrameContentProfessionsProfession1MainSpell:StripTextures(true)
+		AscensionSpellbookFrameContentProfessionsProfession1MainSpell:CreateBackdrop("Transparent")
+
+
+		-- Secondary Profession
+		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession2StatusBar)
+		AscensionSpellbookFrameContentProfessionsProfession2.MissingText:FontTemplate(nil,12)
+		AscensionSpellbookFrameContentProfessionsProfession2.MissingText:SetTextColor(1, 1, 1)
+
+		-- Cooking
+		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession3StatusBar)
+		AscensionSpellbookFrameContentProfessionsProfession3.MissingText:FontTemplate(nil,12)
+		AscensionSpellbookFrameContentProfessionsProfession3.MissingText:SetTextColor(1, 1, 1)
+
+		-- Fishing
+		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession4StatusBar)
+		AscensionSpellbookFrameContentProfessionsProfession4.MissingText:FontTemplate(nil,12)
+		AscensionSpellbookFrameContentProfessionsProfession4.MissingText:SetTextColor(1, 1, 1)
+
+		-- First Aid
+		S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession5StatusBar)
+		AscensionSpellbookFrameContentProfessionsProfession5.MissingText:FontTemplate(nil,12)
+		AscensionSpellbookFrameContentProfessionsProfession5.MissingText:SetTextColor(1, 1, 1)
+
+for i = 1, 5 do
+	local professions = _G["AscensionSpellbookFrameContentProfessionsProfession"..i]
+
+	--S:HandleStatusBar(AscensionSpellbookFrameContentProfessionsProfession1StatusBar)
+
+end
+
+	-- Pet Tab
+	AscensionSpellbookFrameContentPetSpells:StripTextures(true)
+	AscensionSpellbookFrameContentPetSpells:CreateBackdrop("Transparent")
+
+	for i = 1, 12 do
+		local button = _G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i]
+		button:StripTextures()
+		button:CreateBackdrop("Default", true)
+
+		_G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
+
+		E:RegisterCooldown(_G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i.."Cooldown"])
+	end
+
 
 
 	-- Blizz Spellbook (Leaving here for now)
