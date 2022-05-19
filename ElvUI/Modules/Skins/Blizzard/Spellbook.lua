@@ -16,6 +16,7 @@ S:AddCallback("Skin_Spellbook", function()
 
 	AscensionSpellbookFrame:StripTextures(true)
 	AscensionSpellbookFrame:CreateBackdrop("Transparent")
+	--AscensionSpellbookFrame:Size  											-- for later on, the spells will need to be moved as well
 	AscensionSpellbookFrameNineSlice:StripTextures(true)
 	--AscensionSpellbookFrameNineSlice:CreateBackdrop("Transparent")
 	AscensionSpellbookFrameInset:StripTextures(true)
@@ -24,8 +25,6 @@ S:AddCallback("Skin_Spellbook", function()
 	for i = 1, 3 do
 		local tab = _G["AscensionSpellbookFrameTab"..i]
 		tab:Size(122, 32)
-		--tab:GetNormalTexture():StripTextures(true)
-		--tab:GetDisabledTexture():StripTextures(true)
 		tab:GetRegions():SetPoint("CENTER", 0, 2)
 		S:HandleTab(tab)
 	end
@@ -45,11 +44,10 @@ S:AddCallback("Skin_Spellbook", function()
 		local button = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i]
 		local autoCast = _G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."AutoCastable"]
 		button:StripTextures()
+		button:CreateBackdrop("Default", true)
 
 		autoCast:SetTexture("Interface\\Buttons\\UI-AutoCastableOverlay")
 		autoCast:SetOutside(button, 16, 16)
-
-		button:CreateBackdrop("Default", true)
 
 		_G["AscensionSpellbookFrameContentSpellsSpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
 
@@ -77,6 +75,34 @@ S:AddCallback("Skin_Spellbook", function()
 	AscensionSpellbookFrameSideBarTab1:Point("TOPLEFT", AscensionSpellbookFrame, "TOPRIGHT")
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
+
+	--Professions
+	AscensionSpellbookFrameContentProfessions:StripTextures(true)
+
+	for i = 1, 5 do
+		local professions = _G["AscensionSpellbookFrameContentProfessionsProfession"..i]
+		--_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."MainSpellIconTexture"]:SetTexCoord(unpack(E.TexCoords))
+		--_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."ExtraSpellIconTexture"]:SetTexCoord(unpack(E.TexCoords))
+		S:HandleStatusBar(_G["AscensionSpellbookFrameContentProfessionsProfession"..i.."StatusBar"])
+		professions.MissingText:FontTemplate(nil,12)
+		professions.MissingText:SetTextColor(1, 1, 1)
+
+	end
+
+	-- Pet Tab
+	AscensionSpellbookFrameContentPetSpells:StripTextures(true)
+	AscensionSpellbookFrameContentPetSpells:CreateBackdrop("Transparent")
+
+	for i = 1, 12 do
+		local button = _G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i]
+		button:StripTextures()
+		button:CreateBackdrop("Default", true)
+
+		_G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
+
+		E:RegisterCooldown(_G["AscensionSpellbookFrameContentPetSpellsSpellButton"..i.."Cooldown"])
+	end
+
 
 
 	-- Blizz Spellbook (Leaving here for now)
