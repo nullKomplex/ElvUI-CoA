@@ -113,13 +113,14 @@ function S:HandleScrollBar(frame, horizontal)
 
 	local scrollUpButton, scrollDownButton
 	local thumb = frame.thumbTexture or frame.GetThumbTexture and frame:GetThumbTexture() or _G[format("%s%s", frameName, "ThumbTexture")]
-
-	if not horizontal then
-		scrollUpButton = parent.scrollUp or _G[format("%s%s", frameName, "ScrollUpButton")] or _G[format("%s%s", frameName, "UpButton")] or _G[format("%s%s", frameName, "ScrollUp")]
-		scrollDownButton = parent.scrollDown or _G[format("%s%s", frameName, "ScrollDownButton")] or _G[format("%s%s", frameName, "DownButton")] or _G[format("%s%s", frameName, "ScrollDown")]
-	else
-		scrollUpButton = _G[format("%s%s", frameName, "ScrollLeftButton")] or _G[format("%s%s", frameName, "LeftButton")] or _G[format("%s%s", frameName, "ScrollLeft")]
-		scrollDownButton = _G[format("%s%s", frameName, "ScrollRightButton")] or _G[format("%s%s", frameName, "RightButton")] or _G[format("%s%s", frameName, "ScrollRight")]
+	if frameName ~= nil then
+		if not horizontal then
+			scrollUpButton = parent.scrollUp or _G[format("%s%s", frameName, "ScrollUpButton")] or _G[format("%s%s", frameName, "UpButton")] or _G[format("%s%s", frameName, "ScrollUp")]
+			scrollDownButton = parent.scrollDown or _G[format("%s%s", frameName, "ScrollDownButton")] or _G[format("%s%s", frameName, "DownButton")] or _G[format("%s%s", frameName, "ScrollDown")]
+		else
+			scrollUpButton = _G[format("%s%s", frameName, "ScrollLeftButton")] or _G[format("%s%s", frameName, "LeftButton")] or _G[format("%s%s", frameName, "ScrollLeft")]
+			scrollDownButton = _G[format("%s%s", frameName, "ScrollRightButton")] or _G[format("%s%s", frameName, "RightButton")] or _G[format("%s%s", frameName, "ScrollRight")]
+		end
 	end
 
 	if not horizontal then
