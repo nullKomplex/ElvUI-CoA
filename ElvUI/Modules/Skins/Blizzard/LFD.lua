@@ -303,8 +303,10 @@ S:AddCallback("Skin_LFD", function()
 
 		button:Size(28)
 		button:SetTemplate("Default")
-		button.texture:SetInside()
-		button.texture:SetTexCoord(unpack(E.TexCoords))
+		if button.texture ~= nil then
+			button.texture:SetInside()
+			button.texture:SetTexCoord(unpack(E.TexCoords))
+		end
 		button:DisableDrawLayer("OVERLAY")
 
 		button.isSkinned = true
@@ -327,11 +329,12 @@ S:AddCallback("Skin_LFD", function()
 		else
 			button:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
-
-		local texturePath = button.texture:GetTexture()
-		if texturePath then
-			SetPortraitToTexture(button.texture, "")
-			button.texture:SetTexture(texturePath)
+		if button.texture ~= nil then
+			local texturePath = button.texture:GetTexture()
+			if texturePath then
+				SetPortraitToTexture(button.texture, "")
+				button.texture:SetTexture(texturePath)
+			end
 		end
 	end)
 end)
