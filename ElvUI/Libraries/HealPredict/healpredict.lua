@@ -206,17 +206,19 @@ local function HealStop(sender)
 end
 
 local function HealDelay(sender, delay)
-  local delay = delay / 1000
-  local affected = { }
-  for target, _ in pairs(heals) do
-    for tsender, amount in pairs(heals[target]) do
-      if sender == tsender then
-        amount[2] = amount[2] + delay
-        table.insert(affected, target)
+  if type(delay) ~= "string" then
+    local delay = delay / 1000
+    local affected = { }
+    for target, _ in pairs(heals) do
+      for tsender, amount in pairs(heals[target]) do
+        if sender == tsender then
+          amount[2] = amount[2] + delay
+          table.insert(affected, target)
+        end
       end
     end
+    handleCallbacks(unpack(affected))
   end
-  handleCallbacks(unpack(affected))
 end
 
 local function SendHealMsg(msg)
