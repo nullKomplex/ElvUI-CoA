@@ -417,14 +417,15 @@ function eventhandler.COMBAT_LOG_EVENT_UNFILTERED(_, subevent, _, sourcename, _,
       SendHealMsg(HEALSTOP)
 
       local _, _, _, _, starttime, endtime = UnitChannelInfo("player")
+      if starttime ~= nil and endtime ~= nil then
+        local casttime = endtime - starttime
 
-      local casttime = endtime - starttime
+        local total, casts = unpack(cache[spellrank])
+        local amount = total / casts
 
-      local total, casts = unpack(cache[spellrank])
-      local amount = total / casts
-
-      SmartHeal(amount, casttime, 5)
-      is_healing = true
+        SmartHeal(amount, casttime, 5)
+        is_healing = true
+      end
     end
   elseif spellname == BEACON_OF_LIGHT then
     if subevent == "SPELL_AURA_APPLIED" then
