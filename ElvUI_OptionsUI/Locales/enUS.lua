@@ -1072,6 +1072,7 @@ L["Threshold before text goes into decimal form. Set to -1 to disable decimals."
 L["Threshold before text turns red and is in decimal form. Set to -1 for it to never turn red"] = true
 L["Threshold before the icon will fade out and back in. Set to -1 to disable."] = true
 L["Threshold 20"] = true
+L["Threshold 35"] = true
 L["Threshold 50"] = true
 L["Threshold 75"] = true
 L["Ticks"] = true

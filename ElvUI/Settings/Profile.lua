@@ -1257,6 +1257,7 @@ P.unitframe = {
 		auraBarBuff = {r = 0.31, g = 0.31, b = 0.31},
 		auraBarDebuff = {r = 0.8, g = 0.1, b = 0.1},
 		threshold_20 = {r = 1, g = 0, b = 0},
+		threshold_35 = {r = 1, g = 0, b = 0.3},
 		threshold_50 = {r = 1, g = 0.5, b = 0},
 		threshold_75 = {r = 1, g = 1, b = 0},
 		power = {

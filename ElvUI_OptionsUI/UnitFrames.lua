@@ -3428,13 +3428,18 @@ E.Options.args.unitframe = {
 									type = "color",
 									name = L["Threshold 20"]
 								},
-								threshold_50 = {
+								threshold_35 = {
 									order = 24,
+									type = "color",
+									name = L["Threshold 35"]
+								},
+								threshold_50 = {
+									order = 25,
 									type = "color",
 									name = L["Threshold 50"]
 								},
 								threshold_75 = {
-									order = 25,
+									order = 26,
 									type = "color",
 									name = L["Threshold 75"]
 								}

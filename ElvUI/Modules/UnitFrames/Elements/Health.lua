@@ -350,8 +350,10 @@ function UF:PostUpdateHealthColor(unit, r, g, b)
 				newr, newg, newb = r, g, b
 			elseif perc > 0.5 then
 				newr, newg, newb = colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b
-			elseif perc > 0.2 then
+			elseif perc > 0.35 then
 				newr, newg, newb = colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b
+			elseif perc > 0.2 then
+				newr, newg, newb = colors.threshold_35.r, colors.threshold_35.g, colors.threshold_35.b
 			else
 				newr, newg, newb = colors.threshold_20.r, colors.threshold_20.g, colors.threshold_20.b
 			end
