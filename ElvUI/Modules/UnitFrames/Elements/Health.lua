@@ -336,14 +336,26 @@ function UF:PostUpdateHealthColor(unit, r, g, b)
 
 	local newr, newg, newb -- fallback for bg if custom settings arent used
 	if not b then r, g, b = colors.health.r, colors.health.g, colors.health.b end
-	if (((colors.healthclass and colors.colorhealthbyvalue) or (colors.colorhealthbyvalue and parent.isForced)) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit))) then
+	if (((colors.healthclass and colors.colorhealthbyvalue) or (colors.colorhealthbyvalue and parent.isForced) or colors.colorhealthbyvalue_threshold) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit))) then
 		local cur, max = self.cur or 1, self.max or 100
 		if parent.isForced then
 			cur = parent.forcedHealth or cur
 			max = (cur > max and cur * 2) or max
 		end
-
-		newr, newg, newb = ElvUF:ColorGradient(cur, max, 1, 0, 0, 1, 1, 0, r, g, b)
+		if colors.colorhealthbyvalue then
+			newr, newg, newb = ElvUF:ColorGradient(cur, max, 1, 0, 0, 1, 1, 0, r, g, b)
+		elseif colors.colorhealthbyvalue_threshold then 
+			local perc = cur / max
+			if perc > 0.75 then
+				newr, newg, newb = r, g, b
+			elseif perc > 0.5 then
+				newr, newg, newb = colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b
+			elseif perc > 0.2 then
+				newr, newg, newb = colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b
+			else
+				newr, newg, newb = colors.threshold_20.r, colors.threshold_20.g, colors.threshold_20.b
+			end
+		end
 		self:SetStatusBarColor(newr, newg, newb)
 	end
 
