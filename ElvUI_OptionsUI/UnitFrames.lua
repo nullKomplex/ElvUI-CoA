@@ -3280,7 +3280,8 @@ E.Options.args.unitframe = {
 									name = L["Health By Value"],
 									desc = L["Color health by amount remaining."],
 									get = function(info) return E.db.unitframe.colors[info[#info]] end,
-									set = function(info, value) E.db.unitframe.colors[info[#info]] = value UF:Update_AllFrames() end
+									set = function(info, value) E.db.unitframe.colors[info[#info]] = value UF:Update_AllFrames() end,
+									disabled = function() return E.db.unitframe.colors.colorhealthbyvalue_threshold end
 								},
 								healthclass = {
 									order = 3,
@@ -3400,6 +3401,42 @@ E.Options.args.unitframe = {
 									order = 19,
 									type = "color",
 									name = L["Disconnected"]
+								},
+								spacer5 = {
+									order = 20,
+									type = "description",
+									name = " ",
+									width = "full"
+								},
+								colorhealthbyvalue_threshold = {
+									order = 21,
+									type = "toggle",
+									name = L["Health By Threshold"],
+									desc = L["Color health by specific thresholds."],
+									get = function(info) return E.db.unitframe.colors[info[#info]] end,
+									set = function(info, value) E.db.unitframe.colors[info[#info]] = value UF:Update_AllFrames() end,
+									disabled = function() return E.db.unitframe.colors.colorhealthbyvalue end
+								},
+								spacer6 = {
+									order = 22,
+									type = "description",
+									name = " ",
+									width = "full"
+								},
+								threshold_20 = {
+									order = 23,
+									type = "color",
+									name = L["Threshold 20"]
+								},
+								threshold_50 = {
+									order = 24,
+									type = "color",
+									name = L["Threshold 50"]
+								},
+								threshold_75 = {
+									order = 25,
+									type = "color",
+									name = L["Threshold 75"]
 								}
 							}
 						},
