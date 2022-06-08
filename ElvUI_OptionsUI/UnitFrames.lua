@@ -3417,29 +3417,38 @@ E.Options.args.unitframe = {
 									set = function(info, value) E.db.unitframe.colors[info[#info]] = value UF:Update_AllFrames() end,
 									disabled = function() return E.db.unitframe.colors.colorhealthbyvalue end
 								},
-								spacer6 = {
+								colorhealthbyvalue_thresholdgradient = {
 									order = 22,
+									type = "toggle",
+									name = L["Slight Gradient"],
+									desc = L["Allow a small gradient between each threshold"],
+									get = function(info) return E.db.unitframe.colors[info[#info]] end,
+									set = function(info, value) E.db.unitframe.colors[info[#info]] = value UF:Update_AllFrames() end,
+									disabled = function() return not E.db.unitframe.colors.colorhealthbyvalue_threshold end
+								},
+								spacer6 = {
+									order = 23,
 									type = "description",
 									name = " ",
 									width = "full"
 								},
 								threshold_20 = {
-									order = 23,
+									order = 24,
 									type = "color",
 									name = L["Threshold 20"]
 								},
 								threshold_35 = {
-									order = 24,
+									order = 25,
 									type = "color",
 									name = L["Threshold 35"]
 								},
 								threshold_50 = {
-									order = 25,
+									order = 26,
 									type = "color",
 									name = L["Threshold 50"]
 								},
 								threshold_75 = {
-									order = 26,
+									order = 27,
 									type = "color",
 									name = L["Threshold 75"]
 								}

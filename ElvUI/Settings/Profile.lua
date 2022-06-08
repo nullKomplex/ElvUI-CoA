@@ -1221,6 +1221,7 @@ P.unitframe = {
 		powerclass = false,
 		colorhealthbyvalue = true,
 		colorhealthbyvalue_threshold = false,
+		colorhealthbyvalue_thresholdgradient = true,
 		customhealthbackdrop = false,
 		custompowerbackdrop = false,
 		customcastbarbackdrop = false,

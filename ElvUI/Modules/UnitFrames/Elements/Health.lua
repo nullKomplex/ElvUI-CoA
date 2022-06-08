@@ -347,13 +347,29 @@ function UF:PostUpdateHealthColor(unit, r, g, b)
 		elseif colors.colorhealthbyvalue_threshold then 
 			local perc = cur / max
 			if perc > 0.75 then
-				newr, newg, newb = r, g, b
+				if colors.colorhealthbyvalue_thresholdgradient then
+					newr, newg, newb = ElvUF:ColorGradient(perc, 1, r, g, b, colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b, r, g, b)
+				else
+					newr, newg, newb = r, g, b
+				end
 			elseif perc > 0.5 then
-				newr, newg, newb = colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b
+				if colors.colorhealthbyvalue_thresholdgradient then
+					newr, newg, newb = ElvUF:ColorGradient(((perc / .5) + 1), 2.5, r, g, b, colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b, colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b)
+				else
+					newr, newg, newb = colors.threshold_75.r, colors.threshold_75.g, colors.threshold_75.b
+				end
 			elseif perc > 0.35 then
-				newr, newg, newb = colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b
+				if colors.colorhealthbyvalue_thresholdgradient then
+					newr, newg, newb = ElvUF:ColorGradient(((perc / .35) + 1), 2.43, r, g, b, colors.threshold_35.r, colors.threshold_35.g, colors.threshold_35.b, colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b)
+				else
+					newr, newg, newb = colors.threshold_50.r, colors.threshold_50.g, colors.threshold_50.b
+				end
 			elseif perc > 0.2 then
-				newr, newg, newb = colors.threshold_35.r, colors.threshold_35.g, colors.threshold_35.b
+				if colors.colorhealthbyvalue_thresholdgradient then
+					newr, newg, newb = ElvUF:ColorGradient(((perc / .2) + 1), 2.75, r, g, b, colors.threshold_20.r, colors.threshold_20.g, colors.threshold_20.b, colors.threshold_35.r, colors.threshold_35.g, colors.threshold_35.b)
+				else
+					newr, newg, newb = colors.threshold_35.r, colors.threshold_35.g, colors.threshold_35.b
+				end
 			else
 				newr, newg, newb = colors.threshold_20.r, colors.threshold_20.g, colors.threshold_20.b
 			end
