@@ -2571,6 +2571,9 @@ do -- CharacterFrame
 	PaperDollFrame:SetScript("OnShow", function()
 		module:PaperDollFrame_SetLevel()
 
+		-- Include Hit Rating Adjustments
+		C_Cache:QueryAllStats()
+		
 		if UnitHasRelicSlot("player") then
 			CharacterAmmoSlot:Hide()
 		else
@@ -2605,6 +2608,8 @@ do -- CharacterFrame
 			PaperDollStatCategory_OnDragStop(MOVING_STAT_CATEGORY)
 		end
 	end)
+	
+	hooksecurefunc("PaperDollFrame_UpdateStats", function() module:PaperDollFrame_UpdateStats() end)
 end
 
 do -- PetFrame
