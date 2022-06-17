@@ -59,9 +59,10 @@ Contributions from this repository:
 2. Unpack the Zip file
 3. Open the folder "ElvUI-Ascension-(#.##)"
 4. Copy (or drag and drop) **ElvUI**, **ElvUI_OptionsUI**, **ElvUI_AscensionExtendedUI** and **ElvUI_Enhanced** into your `Wow-Directory\Interface\AddOns`
-5. Unpack Patchfile.zip
-6. Place the Patch-Y.mpq file into  `Wow-Directory\Data`
-7. Restart WoW
+5. While you are in your addon folder, ensure you do not have the addon installed `All-Stats`. This addon provides that functionality.
+6. Unpack Patchfile.zip
+7. Place the Patch-Y.mpq file into  `Wow-Directory\Data`
+8. Restart WoW
 
 ## Plugins:
 ElvUI_Enhanced - Included in this repo
