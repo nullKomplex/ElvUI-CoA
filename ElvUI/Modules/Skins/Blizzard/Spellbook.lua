@@ -22,6 +22,13 @@ S:AddCallback("Skin_Spellbook", function()
 	AscensionSpellbookFrameInset:StripTextures(true)
 	AscensionSpellbookFrameInset:CreateBackdrop("Transparent")
 
+	AscensionSpellbookFrame:RegisterForDrag("LeftButton")
+	AscensionSpellbookFrame:SetMovable(true)
+	AscensionSpellbookFrame:SetScript("OnDragStart", function(self) self:StartMoving() end)
+	AscensionSpellbookFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+	
+	-- AscensionSpellbookFrame:SetScale(0.9)
+
 	for i = 1, 3 do
 		local tab = _G["AscensionSpellbookFrameTab"..i]
 		tab:Size(122, 32)
@@ -72,7 +79,14 @@ S:AddCallback("Skin_Spellbook", function()
 		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 	end
 
-	AscensionSpellbookFrameSideBarTab1:Point("TOPLEFT", AscensionSpellbookFrame, "TOPRIGHT")
+	AscensionSpellbookFrameSideBarTab1:Point("TOPLEFT", AscensionSpellbookFrame, "TOPRIGHT", 0, -40)
+
+	for i = 2, MAX_SKILLLINE_TABS do
+		local tab = _G["AscensionSpellbookFrameSideBarTab"..i]
+		local previous = _G["AscensionSpellbookFrameSideBarTab"..i - 1]
+	
+		tab:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -8)
+	end
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
 
