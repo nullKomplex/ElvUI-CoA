@@ -23,7 +23,7 @@ function UF:Configure_InfoPanel(frame, noTemplateChange)
 		frame.InfoPanel:Show()
 		frame.InfoPanel:ClearAllPoints()
 
-		if frame.ORIENTATION == "RIGHT" and not (frame.unitframeType == "arena") then
+		if frame.ORIENTATION == "RIGHT" and frame.unitframeType ~= "arena" then
 			frame.InfoPanel:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER + frame.SPACING)
 			if frame.USE_RAGEBAR and not frame.USE_INSET_RAGEBAR and not frame.RAGEBAR_DETACHED then
 				frame.InfoPanel:Point("TOPLEFT", frame.Rage.backdrop, "BOTTOMLEFT", frame.BORDER, -(frame.SPACING*3))
