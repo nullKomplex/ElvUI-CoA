@@ -764,7 +764,7 @@ local function GetAverageItemLevel()
 	counter = 0
 	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
 
-	for slotID = 1, 16 do
+	for slotID = 1, 17 do
 		counter = counter + 1
 		if slotID ~= INVSLOT_BODY then
 			local itemLink = GetInventoryItemLink("player", slotID)
