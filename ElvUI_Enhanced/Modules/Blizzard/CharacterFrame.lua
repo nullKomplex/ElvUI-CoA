@@ -775,6 +775,7 @@ local function GetAverageItemLevel()
 					if itemEquipLoc == "INVTYPE_2HWEAPON" then
 						items = items + 2
 						ilvl = ilvl + (itemLevel * 2)
+						break
 					else 
 						items = items + 1
 						ilvl = ilvl + itemLevel
