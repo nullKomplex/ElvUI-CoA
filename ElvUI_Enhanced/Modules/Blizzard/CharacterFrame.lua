@@ -765,22 +765,18 @@ local function GetAverageItemLevel()
 	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
 
 	for slotID = 1, 17 do
-		counter = counter + 1
 		if slotID ~= INVSLOT_BODY then
+			items = items + 1
 			local itemLink = GetInventoryItemLink("player", slotID)
 
 			if itemLink then
 				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
 				if itemLevel then
+					ilvl = ilvl + itemLevel
 					if itemEquipLoc == "INVTYPE_2HWEAPON" then
-						items = items + 2
-						ilvl = ilvl + (itemLevel * 2)
 						break
-					else 
-						items = items + 1
-						ilvl = ilvl + itemLevel
 					end
-
+					
 					colorCount = colorCount + 1
 					sumR = sumR + qualityColors[quality][1]
 					sumG = sumG + qualityColors[quality][2]
