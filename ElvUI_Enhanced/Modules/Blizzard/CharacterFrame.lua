@@ -773,15 +773,16 @@ local function GetAverageItemLevel()
 				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
 				if itemLevel then
 					ilvl = ilvl + itemLevel
-					if itemEquipLoc == "INVTYPE_2HWEAPON" then
-						break
-					end
 					
 					colorCount = colorCount + 1
 					sumR = sumR + qualityColors[quality][1]
 					sumG = sumG + qualityColors[quality][2]
 					sumB = sumB + qualityColors[quality][3]
 
+					if itemEquipLoc == "INVTYPE_2HWEAPON" then
+						break
+					end
+					
 					--Irrelevant Titans Grip Calculation ??
 					--if slotID == INVSLOT_MAINHAND and (itemEquipLoc ~= "INVTYPE_2HWEAPON" or titanGrip) then
 					--	items = 17
