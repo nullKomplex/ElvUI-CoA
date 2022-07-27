@@ -278,6 +278,7 @@ L["Total CPU:"] = "CPU Total:"
 L["Total Memory:"] = "Memória Total:"
 L["Total: "] = "Total: "
 L["Trigger"] = "Gatilho"
+L["Type /hellokitty to revert to old settings."] = true
 L["UI Scale"] = true
 L["Unhittable:"] = "Inacertável"
 L["Vehicle Seat Frame"] = "Quadro de Assento de Veículo"
