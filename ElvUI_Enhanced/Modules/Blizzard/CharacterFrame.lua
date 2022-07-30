@@ -759,24 +759,28 @@ end
 ]]
 
 local function GetAverageItemLevel()
-	-- Changed colors to preset RGB values EG: <100 = green, <115=blue, >115=purple
-	-- ALL YOU HAVE TO DO IS `return AVG_ITEM_LEVEL`
-	local ilvl = AVG_ITEM_LEVEL
-	if ilvl < 100 then
-		r = 0
-		g = 252
-		b = 0
-		return ilvl, r, g, b
-	elseif ilvl < 115 then
-		r = 0
-		g = 0
-		b = 225
-		return ilvl, r, g, b
-	else 
-		r = 128
-		g = 0
-		b = 128
-		return ilvl, r, g, b
+	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
+
+	for slotID = 1, 17 do
+		if slotID ~= INVSLOT_BODY then
+			local itemLink = GetInventoryItemLink("player", slotID)
+
+			if itemLink then
+				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+				if itemLevel then
+					colorCount = colorCount + 1
+					sumR = sumR + qualityColors[quality][1]
+					sumG = sumG + qualityColors[quality][2]
+					sumB = sumB + qualityColors[quality][3]
+				end
+			end
+		end
+	end
+
+	if colorCount == 0 then
+		return AVG_ITEM_LEVEL, 1, 1, 1
+	else
+		return AVG_ITEM_LEVEL, (sumR / colorCount), (sumG / colorCount), (sumB / colorCount)
 	end
 end
 
