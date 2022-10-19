@@ -43,7 +43,7 @@ G.unitframe = {
 		otherFilter = "CCDebuffs",
 	},
 	spellRangeCheck = {
-		DRUID = {
+		HERO = {
 			enemySpells = {
 				[5246] = true, -- Intimidating Shout (8 yards)
 				[20271] = true, -- Judgement of Light (10 yards)
