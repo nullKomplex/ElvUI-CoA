@@ -46,7 +46,8 @@ UF.badHeaderPoints = {
 
 UF.headerFunctions = {}
 UF.classMaxResourceBar = {
-	["DRUID"] = 1
+	["DRUID"] = 1,
+	["HERO"] = 1
 }
 
 UF.instanceMapIDs = {
@@ -60,7 +61,7 @@ UF.instanceMapIDs = {
 
 UF.headerGroupBy = {
 	["CLASS"] = function(header)
-		header:SetAttribute("groupingOrder", "DEATHKNIGHT,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR")
+		header:SetAttribute("groupingOrder", "HERO,DEATHKNIGHT,DRUID,HUNTER,MAGE,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR")
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "CLASS")
 	end,
