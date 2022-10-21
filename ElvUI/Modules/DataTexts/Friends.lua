@@ -155,7 +155,7 @@ local function OnClick(_, btn)
 				end
 
 				if not shouldSkip then
-					classc = E.media.herocolor
+					classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]]
 					classc = classc or GetQuestDifficultyColor(info[2])
 					levelc = GetQuestDifficultyColor(info[2])
 
@@ -237,7 +237,7 @@ local function OnEnter(self)
 					zonec = inactivezone
 				end
 
-				classc = E.media.herocolor
+				classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]]
 				classc = classc or GetQuestDifficultyColor(info[2])
 				levelc = GetQuestDifficultyColor(info[2])
 

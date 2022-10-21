@@ -210,7 +210,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.castColor = E:GetColor(0.31, 0.31, 0.31)
 		E.db.unitframe.colors.castClassColor = false
 	elseif theme == "class" then
-		classColor = E.media.herocolor
+		classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 
 		E.db.general.bordercolor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(0.31, 0.31, 0.31))
 		E.db.general.backdropcolor = E:GetColor(0.1, 0.1, 0.1)

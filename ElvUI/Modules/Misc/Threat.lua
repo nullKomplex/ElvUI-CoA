@@ -49,7 +49,7 @@ end
 
 function THREAT:GetColor(unit)
 	if UnitIsPlayer(unit) then
-		local class = E.media.herocolor
+		local class = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[unitClass] or RAID_CLASS_COLORS[unitClass]
 		if not class then
 			return 194, 194, 194
 		end

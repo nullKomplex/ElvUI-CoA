@@ -101,7 +101,8 @@ local function UpdateColor(self, event, unit)
 	elseif(element.colorClass and UnitIsPlayer(unit)) or
 		(element.colorClassNPC and not UnitIsPlayer(unit)) or
 		(element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
-		t = oUF.herocolor
+			local _, class = UnitClass(unit)
+			t = self.colors.class[class]
 	elseif(element.colorReaction and UnitReaction(unit, 'player')) then
 		t = self.colors.reaction[UnitReaction(unit, 'player')]
 	elseif(element.colorSmooth) then

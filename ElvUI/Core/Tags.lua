@@ -296,7 +296,10 @@ ElvUF.Tags.Methods["namecolor"] = function(unit)
 	local unitReaction = UnitReaction(unit, "player")
 	local unitPlayer = UnitIsPlayer(unit)
 	if unitPlayer then
-		return Hex(E.media.herocolor.r, E.media.herocolor.g, E.media.herocolor.b)
+		local _, unitClass = UnitClass(unit)
+		local class = ElvUF.colors.class[unitClass]
+		if not class then return "" end
+		return Hex(class[1], class[2], class[3])
 	elseif unitReaction then
 		local reaction = ElvUF.colors.reaction[unitReaction]
 		return Hex(reaction[1], reaction[2], reaction[3])
