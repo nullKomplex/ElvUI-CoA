@@ -308,7 +308,12 @@ function TT:INSPECT_TALENT_READY(event, unit)
 	end
 
 	local itemLevel = self:GetItemLvL(unit)
+	local _, specName = E:GetTalentSpecInfo(true)
 	inspectCache[self.lastGUID] = {time = GetTime()}
+
+	if specName then
+		inspectCache[self.lastGUID].specName = specName
+	end
 
 	if itemLevel then
 		inspectCache[self.lastGUID].itemLevel = itemLevel
@@ -323,12 +328,17 @@ function TT:ShowInspectInfo(tt, unit, r, g, b)
 
 	local GUID = UnitGUID(unit)
 	if GUID == E.myguid then
+		local _, specName = E:GetTalentSpecInfo()
+
+		tt:AddDoubleLine(L["Talent Specialization:"], specName, nil, nil, nil, r, g, b)
 		tt:AddDoubleLine(L["Item Level:"], self:GetItemLvL("player"), nil, nil, nil, 1, 1, 1)
 		return
 	elseif inspectCache[GUID] then
+		local specName = inspectCache[GUID].specName
 		local itemLevel = inspectCache[GUID].itemLevel
 
 		if (GetTime() - inspectCache[GUID].time) < 900 and itemLevel then
+			tt:AddDoubleLine(L["Talent Specialization:"], specName, nil, nil, nil, r, g, b)
 			tt:AddDoubleLine(L["Item Level:"], itemLevel, nil, nil, nil, 1, 1, 1)
 			return
 		else
@@ -379,6 +389,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if unit ~= "player" and UnitExists(unitTarget) then
 			local targetColor
 			if UnitIsPlayer(unitTarget) and not UnitHasVehicleUI(unitTarget) then
+				local _, class = UnitClass(unitTarget)
 				targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			else
 				targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unitTarget, "player")] or FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]

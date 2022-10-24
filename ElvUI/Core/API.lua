@@ -44,6 +44,21 @@ function E:ScanTooltipTextures(clean, grabTextures)
 	return textures
 end
 
+function E:CheckTalentTree(tree)
+	local talentTree = self.TalentTree
+	if not talentTree then return false end
+
+	if type(tree) == "number" then
+		return tree == talentTree
+	elseif type(tree) == "table" then
+		for _, index in ipairs(tree) do
+			if index == talentTree then
+				return true
+			end
+		end
+	end
+end
+
 function E:GetPlayerRole()
 	local isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
 
@@ -52,6 +67,73 @@ function E:GetPlayerRole()
 	else
 		return "DAMAGER"  -- Assume dps role; Nothing better for ascension.
 	end
+end
+
+function E:GetTalentSpecInfo(isInspect)
+	local talantGroup = GetActiveTalentGroup(isInspect)
+	local maxPoints, specIdx, specName, specIcon = 0, 0
+
+	for i = 1, MAX_TALENT_TABS do
+		local name, icon, pointsSpent = GetTalentTabInfo(i, isInspect, nil, talantGroup)
+		if maxPoints < pointsSpent then
+			maxPoints = pointsSpent
+			specIdx = i
+			specName = name
+			specIcon = icon
+		end
+	end
+
+	if not specName then
+		specName = NONE
+	end
+	if not specIcon then
+		specIcon = "Interface\\Icons\\INV_Misc_QuestionMark"
+	end
+
+	return specIdx, specName, specIcon
+end
+
+function E:CheckRole(event)
+	local talentTree = self:GetTalentSpecInfo()
+	local role
+
+	if type(self.ClassRole[self.myclass]) == "string" then
+		role = self.ClassRole[self.myclass]
+	elseif talentTree then
+		if self.myclass == "DRUID" and talentTree == 2 then
+			role = select(5, GetTalentInfo(talentTree, 22)) > 0 and "Tank" or "Melee"
+		elseif self.myclass == "DEATHKNIGHT" and talentTree == 2 then
+			role = select(5, GetTalentInfo(talentTree, 25)) > 0 and "Tank" or "Melee"
+		else
+			role = self.ClassRole[self.myclass][talentTree]
+		end
+	end
+
+	if not role then role = "Melee" end
+
+	if self.Role ~= role then
+		self.Role = role
+		self.TalentTree = talentTree
+		self.callbacks:Fire("RoleChanged")
+	end
+
+	if E.myclass == "SHAMAN" then
+		if talentTree == 3 and IsSpellKnown(51886) then
+			self.DispelClasses[self.myclass].Curse = true
+		else
+			self.DispelClasses[self.myclass].Curse = false
+		end
+	end
+
+	if event == "SPELL_UPDATE_USABLE" then
+		self:UnregisterEvent(event)
+	end
+end
+
+function E:IsDispellableByMe(debuffType)
+	if not self.DispelClasses[self.myclass] then return end
+
+	if self.DispelClasses[self.myclass][debuffType] then return true end
 end
 
 do
